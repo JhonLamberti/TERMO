@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-fta: #f37021;
+  --color-fta-dark: #d65912;
+  --color-fta-light: #ffede2;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom scrollbar styling for a high-fidelity web app experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+@media print {
+  /* Hide all interactive non-print elements */
+  nav, aside, button, header, .no-print, .save-status, .zoom-controls {
+    display: none !important;
+  }
+  
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  
+  #root, .min-h-screen, .app-layout {
+    display: block !important;
+    min-height: auto !important;
+    height: auto !important;
+    background: white !important;
+  }
+  
+  #printable-content {
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+  
+  .page-break-after-always {
+    page-break-after: always !important;
+    break-after: page !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-height: 100vh !important; /* ensures it takes the full page */
+  }
+}
+
+@page {
+  margin: 0;
+  size: A4;
+}
