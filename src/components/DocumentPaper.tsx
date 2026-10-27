@@ -1461,7 +1461,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
                         <td className="p-1.5 text-neutral-900 font-medium">Início: {getVal(horarioInicioIntegracao)} &nbsp;&nbsp;&nbsp;&nbsp; Término: {getVal(horarioTerminoIntegracao)}</td>
                       </tr>
                       <tr className="border border-neutral-300">
-                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável pela Integração</td>
+                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável pelo treinamento</td>
                         <td className="p-1.5 text-neutral-900 font-medium">{getVal(responsavelIntegracao)}</td>
                       </tr>
                       <tr className="border border-neutral-300">
@@ -1472,37 +1472,17 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
                   </table>
                 </div>
 
-                <div className="mb-3.5">
-                  <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
-                    CONTEÚDO APLICADO NA INTEGRAÇÃO RH
-                  </h3>
-                  <ul className="space-y-1 text-[9.5px] text-neutral-800 font-sans grid grid-cols-2 gap-x-4">
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação institucional da empresa (história, missão, visão e valores)</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da estrutura organizacional e setores</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Código de ética e conduta profissional</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras e normas internas da empresa</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Jornada de trabalho, registro de ponto e cumprimento de horários</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Procedimentos para comunicação de faltas, atrasos e ausências</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação dos benefícios concedidos pela empresa</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Políticas de RH e canais de comunicação</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Responsabilidades e postura profissional esperada</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Uso adequado dos recursos disponibilizados pela empresa</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras de confidencialidade e proteção de informações (LGPD)</li>
-                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da liderança e área de atuação</li>
-                  </ul>
-
-                  {/* Conteúdo adicional/complementar digitável */}
-                  {conteudoComplementarIntegracao && conteudoComplementarIntegracao.trim() !== '' && (
-                    <div className="mt-2.5 pt-2 border-t border-dashed border-neutral-300">
-                      <span className="text-[9px] font-bold text-neutral-700 uppercase tracking-wider block mb-1">
-                        Conteúdo Complementar / Específico:
-                      </span>
-                      <div className="text-[9.5px] text-neutral-800 font-sans whitespace-pre-wrap leading-relaxed bg-neutral-50 p-2 rounded border border-neutral-200">
-                        {conteudoComplementarIntegracao}
-                      </div>
+                {/* Conteúdo editável exibido apenas quando inserido */}
+                {conteudoComplementarIntegracao && conteudoComplementarIntegracao.trim() !== '' && (
+                  <div className="mb-3.5">
+                    <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
+                      CONTEÚDO
+                    </h3>
+                    <div className="text-[9.5px] text-neutral-800 font-sans whitespace-pre-wrap leading-relaxed bg-neutral-50 p-2.5 rounded border border-neutral-200">
+                      {conteudoComplementarIntegracao}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <div>
                   <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">

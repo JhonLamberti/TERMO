@@ -458,7 +458,7 @@ export default function App() {
                       <option value="checklistDemissional">RH-013 | Checklist Demissional</option>
                       <option value="checklistAdmissional">RH-014 | Checklist Admissional</option>
                       <option value="exercicioFuncoes">RH-015 | Declaração de Exercício de Funções</option>
-                      <option value="listaPresenca">RH-016 | Lista de Presença de Integração</option>
+                      <option value="listaPresenca">RH-016 | Lista de Presença</option>
                       <option value="cartoesBeneficios">RH-017 | Termo de Recebimento de Cartões de Benefícios</option>
                       <option value="primeirosAcessos">RH-018 | Guia de Primeiros Acessos</option>
                       <option value="errataDesligamento">RH-019 | Errata ao Aviso de Desligamento</option>
@@ -1579,7 +1579,7 @@ export default function App() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Responsável pela Integração</label>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Responsável pelo treinamento</label>
                         <input
                           type="text"
                           value={state.responsavelIntegracao}
@@ -1588,19 +1588,19 @@ export default function App() {
                         />
                       </div>
 
-                      {/* Campo livre abaixo do Conteúdo Aplicado */}
+                      {/* Campo livre e editável de Conteúdo */}
                       <div className="bg-amber-50/70 border border-amber-200 p-3 rounded-lg space-y-1.5">
                         <label className="block text-[10px] font-bold text-amber-900 uppercase">
-                          Conteúdo Complementar / Específico
+                          Conteúdo / Descrição
                         </label>
                         <p className="text-[10px] text-amber-700/90 leading-tight">
-                          Texto livre exibido abaixo dos 12 tópicos padrão da integração RH.
+                          Campo livre e editável. As informações digitadas aqui serão exibidas no documento.
                         </p>
                         <textarea
-                          rows={3}
+                          rows={4}
                           value={state.conteudoComplementarIntegracao}
                           onChange={(e) => setField('conteudoComplementarIntegracao', e.target.value)}
-                          placeholder="Digite aqui tópicos extras abordados, especificidades do treinamento ou observações gerais..."
+                          placeholder="Digite aqui o conteúdo, pauta, tópicos abordados ou observações da lista de presença..."
                           className="w-full text-xs bg-white border border-amber-300 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021] outline-none"
                         />
                       </div>
