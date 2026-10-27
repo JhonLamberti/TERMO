@@ -1400,191 +1400,121 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
       {modelo === 'listaPresenca' && (() => {
         const rawParticipants = participantesIntegracao && participantesIntegracao.length > 0 
           ? participantesIntegracao 
-          : Array.from({ length: 10 }, () => ({ nome: '', cargo: '', setor: '', cpfMatricula: '' }));
+          : Array.from({ length: 25 }, () => ({ nome: '', cargo: '', setor: '', cpfMatricula: '' }));
         
-        // Limita a no máximo 30 participantes conforme solicitado
-        const participants = rawParticipants.slice(0, 30);
-        const total = participants.length;
-        const totalPages = total > 16 ? 3 : 2;
-
-        const page1Items = participants.slice(0, 6);
-        const page2Items = totalPages === 3 ? participants.slice(6, 20) : participants.slice(6);
-        const page3Items = totalPages === 3 ? participants.slice(20) : [];
+        // Limita a no máximo 25 participantes para caber perfeitamente em 1 única página
+        const participants = rawParticipants.slice(0, 25);
 
         const renderParticipantRow = (p: { nome: string; cargo: string; setor: string; cpfMatricula: string }, index: number) => {
           const numStr = String(index + 1).padStart(2, '0');
           return (
-            <tr key={index} className="border border-neutral-300 h-7 text-[9.5px]">
-              <td className="p-1.5 text-center border-r border-neutral-300 text-neutral-600 font-mono font-medium">{numStr}</td>
-              <td className="p-1.5 border-r border-neutral-300 font-medium text-neutral-900 truncate max-w-[190px]">{p.nome || ''}</td>
-              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[110px]">{p.cargo || ''}</td>
-              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[100px]">{p.setor || ''}</td>
-              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[110px]">{p.cpfMatricula || ''}</td>
-              <td className="p-1.5"></td>
+            <tr key={index} className="border border-neutral-300 h-[19px] max-h-[19px] text-[8px] leading-tight">
+              <td className="p-0.5 text-center border-r border-neutral-300 text-neutral-600 font-mono font-medium">{numStr}</td>
+              <td className="px-1 py-0.5 border-r border-neutral-300 font-medium text-neutral-900 truncate max-w-[200px]">{p.nome || ''}</td>
+              <td className="px-1 py-0.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[110px]">{p.cargo || ''}</td>
+              <td className="px-1 py-0.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[90px]">{p.setor || ''}</td>
+              <td className="px-1 py-0.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[100px]">{p.cpfMatricula || ''}</td>
+              <td className="px-1 py-0.5"></td>
             </tr>
           );
         };
 
         const renderTableHeader = () => (
           <thead>
-            <tr className="border border-neutral-300 bg-neutral-50 text-neutral-700 text-[9.5px]">
-              <td className="p-1.5 font-bold border-r border-neutral-300 text-center w-[5%]">Nº</td>
-              <td className="p-1.5 font-bold border-r border-neutral-300 w-[30%]">Nome do Colaborador</td>
-              <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Cargo</td>
-              <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Setor</td>
-              <td className="p-1.5 font-bold border-r border-neutral-300 w-[17%]">CPF/Matrícula</td>
-              <td className="p-1.5 font-bold w-[18%] text-center">Assinatura</td>
+            <tr className="border border-neutral-300 bg-neutral-100 text-neutral-800 text-[8px] uppercase tracking-wider font-bold">
+              <th className="p-0.5 border-r border-neutral-300 text-center w-[4%]">Nº</th>
+              <th className="px-1 py-0.5 border-r border-neutral-300 text-left w-[33%]">Nome do Colaborador</th>
+              <th className="px-1 py-0.5 border-r border-neutral-300 text-left w-[17%]">Cargo / Função</th>
+              <th className="px-1 py-0.5 border-r border-neutral-300 text-left w-[14%]">Setor</th>
+              <th className="px-1 py-0.5 border-r border-neutral-300 text-left w-[16%]">CPF / Matrícula</th>
+              <th className="px-1 py-0.5 text-center w-[16%]">Assinatura</th>
             </tr>
           </thead>
         );
 
         return (
-          <div className="space-y-8 print:space-y-0">
-            {/* PÁGINA 1 */}
-            <div className={`${paperClass} border border-dashed border-neutral-300 print:border-none`}>
-              <div>
-                <RenderHeader title="LISTA DE PRESENÇA" />
-                
-                <div className="mb-3.5">
-                  <table className="w-full text-[10.5px] font-sans border-collapse">
-                    <tbody>
-                      <tr className="border border-neutral-300">
-                        <td className="w-[30%] bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Empresa</td>
-                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(razaoSocial)}</td>
-                      </tr>
-                      <tr className="border border-neutral-300">
-                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Data</td>
-                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(dataIntegracao)}</td>
-                      </tr>
-                      <tr className="border border-neutral-300">
-                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Horário</td>
-                        <td className="p-1.5 text-neutral-900 font-medium">Início: {getVal(horarioInicioIntegracao)} &nbsp;&nbsp;&nbsp;&nbsp; Término: {getVal(horarioTerminoIntegracao)}</td>
-                      </tr>
-                      <tr className="border border-neutral-300">
-                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável pelo treinamento</td>
-                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(responsavelIntegracao)}</td>
-                      </tr>
-                      <tr className="border border-neutral-300">
-                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Local</td>
-                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(localIntegracao)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Conteúdo editável exibido apenas quando inserido */}
-                {conteudoComplementarIntegracao && conteudoComplementarIntegracao.trim() !== '' && (
-                  <div className="mb-3.5">
-                    <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
-                      CONTEÚDO
-                    </h3>
-                    <div className="text-[9.5px] text-neutral-800 font-sans whitespace-pre-wrap leading-relaxed bg-neutral-50 p-2.5 rounded border border-neutral-200">
-                      {conteudoComplementarIntegracao}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
-                    PARTICIPANTES
-                  </h3>
-                  <table className="w-full text-[9.5px] font-sans border-collapse mt-1">
-                    {renderTableHeader()}
-                    <tbody>
-                      {page1Items.map((p, idx) => renderParticipantRow(p, idx))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div>
-                <RenderFooter pageStr={`Página 1 de ${totalPages}`} />
-              </div>
-            </div>
-
-            {/* PÁGINA 2 */}
-            <div className={paperClass}>
-              <div>
-                <RenderHeader title="LISTA DE PRESENÇA" />
-                
-                {page2Items.length > 0 ? (
-                  <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
-                    {renderTableHeader()}
-                    <tbody>
-                      {page2Items.map((p, idx) => renderParticipantRow(p, idx + 6))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="py-6 text-center text-xs text-neutral-400 italic">
-                    (Sem participantes adicionais nesta página)
-                  </div>
-                )}
-
-                {/* Se for 2 páginas, a declaração fica na Página 2 */}
-                {totalPages === 2 && (
-                  <>
-                    <div className="text-[11px] font-sans leading-relaxed text-neutral-800 space-y-4 text-justify mt-8">
-                      <p>
-                        Declaro que participei da Integração de RH, recebi as orientações necessárias referente às normas, procedimentos internos e responsabilidades aplicáveis à minha função.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col text-[11px] font-sans mt-8 space-y-2">
-                      <div className="flex gap-2 items-end">
-                        <span className="font-bold">Assinatura do Responsável RH:</span>
-                        <span className="border-b border-neutral-600 flex-1 ml-2 mr-24"></span>
-                      </div>
-                      <div className="flex gap-2 items-end">
-                        <span className="font-bold">Data:</span>
-                        <span className="border-b border-neutral-600 w-32 ml-2"></span>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
+          <div className={paperClass}>
+            <div className="flex-1 flex flex-col justify-start">
+              <RenderHeader title="LISTA DE PRESENÇA" />
               
-              <div>
-                <RenderFooter pageStr={`Página 2 de ${totalPages}`} />
+              {/* Tabela compacta de informações do treinamento */}
+              <div className="mb-2">
+                <table className="w-full text-[8.5px] font-sans border-collapse">
+                  <tbody>
+                    <tr className="border border-neutral-300">
+                      <td className="w-[18%] bg-neutral-50 px-1.5 py-0.5 font-bold text-neutral-700 border-r border-neutral-300">Empresa</td>
+                      <td className="px-1.5 py-0.5 text-neutral-900 font-medium" colSpan={3}>{getVal(razaoSocial)}</td>
+                    </tr>
+                    <tr className="border border-neutral-300">
+                      <td className="w-[18%] bg-neutral-50 px-1.5 py-0.5 font-bold text-neutral-700 border-r border-neutral-300">Data</td>
+                      <td className="w-[32%] px-1.5 py-0.5 text-neutral-900 font-medium border-r border-neutral-300">{getVal(dataIntegracao)}</td>
+                      <td className="w-[18%] bg-neutral-50 px-1.5 py-0.5 font-bold text-neutral-700 border-r border-neutral-300">Horário</td>
+                      <td className="w-[32%] px-1.5 py-0.5 text-neutral-900 font-medium">Início: {getVal(horarioInicioIntegracao)} &nbsp;|&nbsp; Término: {getVal(horarioTerminoIntegracao)}</td>
+                    </tr>
+                    <tr className="border border-neutral-300">
+                      <td className="bg-neutral-50 px-1.5 py-0.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável</td>
+                      <td className="px-1.5 py-0.5 text-neutral-900 font-medium border-r border-neutral-300">{getVal(responsavelIntegracao)}</td>
+                      <td className="bg-neutral-50 px-1.5 py-0.5 font-bold text-neutral-700 border-r border-neutral-300">Local</td>
+                      <td className="px-1.5 py-0.5 text-neutral-900 font-medium">{getVal(localIntegracao)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Conteúdo editável exibido apenas quando inserido */}
+              {conteudoComplementarIntegracao && conteudoComplementarIntegracao.trim() !== '' && (
+                <div className="mb-2">
+                  <div className="text-[8px] text-neutral-800 font-sans whitespace-pre-wrap leading-tight bg-neutral-50 px-2 py-1 rounded border border-neutral-200">
+                    <strong className="text-[8px] uppercase text-neutral-700 block mb-0.5">Conteúdo Programático:</strong>
+                    {conteudoComplementarIntegracao}
+                  </div>
+                </div>
+              )}
+
+              {/* Tabela de Participantes (Até 25 participantes na mesma página) */}
+              <div className="w-full">
+                <table className="w-full text-[8px] font-sans border-collapse">
+                  {renderTableHeader()}
+                  <tbody>
+                    {participants.map((p, idx) => renderParticipantRow(p, idx))}
+                  </tbody>
+                </table>
               </div>
             </div>
 
-            {/* PÁGINA 3 (Quando total > 16 participantes) */}
-            {totalPages === 3 && (
-              <div className={paperClass}>
+            {/* Rodapé com Declaração e Assinaturas (Tudo em 1 Página) */}
+            <div className="mt-2 pt-1 border-t border-neutral-200">
+              <p className="text-[8px] font-sans text-neutral-600 text-justify leading-tight mb-2">
+                Declaro que participei do treinamento/integração e recebi as orientações necessárias.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-8 text-[8.5px] font-sans pt-1">
                 <div>
-                  <RenderHeader title="LISTA DE PRESENÇA" />
-                  
-                  {page3Items.length > 0 && (
-                    <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
-                      {renderTableHeader()}
-                      <tbody>
-                        {page3Items.map((p, idx) => renderParticipantRow(p, idx + 20))}
-                      </tbody>
-                    </table>
-                  )}
-
-                  <div className="text-[11px] font-sans leading-relaxed text-neutral-800 space-y-4 text-justify mt-8">
-                    <p>
-                      Declaro que participei da Integração de RH, recebi as orientações necessárias referente às normas, procedimentos internos e responsabilidades aplicáveis à minha função.
-                    </p>
+                  <div className="border-b border-neutral-600 h-4 mb-1"></div>
+                  <div className="text-center font-bold text-neutral-800 truncate">
+                    {getVal(responsavelIntegracao) || 'Responsável pelo Treinamento'}
                   </div>
-
-                  <div className="flex flex-col text-[11px] font-sans mt-8 space-y-2">
-                    <div className="flex gap-2 items-end">
-                      <span className="font-bold">Assinatura do Responsável RH:</span>
-                      <span className="border-b border-neutral-600 flex-1 ml-2 mr-24"></span>
-                    </div>
-                    <div className="flex gap-2 items-end">
-                      <span className="font-bold">Data:</span>
-                      <span className="border-b border-neutral-600 w-32 ml-2"></span>
-                    </div>
+                  <div className="text-center text-[7.5px] text-neutral-500 uppercase">
+                    Assinatura do Responsável
                   </div>
                 </div>
-                
                 <div>
-                  <RenderFooter pageStr="Página 3 de 3" />
+                  <div className="border-b border-neutral-600 h-4 mb-1 flex items-end justify-center pb-0.5 font-mono text-[8.5px] text-neutral-800">
+                    {getVal(dataIntegracao)}
+                  </div>
+                  <div className="text-center font-bold text-neutral-800">
+                    Data de Realização
+                  </div>
+                  <div className="text-center text-[7.5px] text-neutral-500 uppercase">
+                    Visto Coordenação / RH
+                  </div>
                 </div>
               </div>
-            )}
+
+              <div className="mt-2">
+                <RenderFooter pageStr="Página 1 de 1" />
+              </div>
+            </div>
           </div>
         );
       })()}

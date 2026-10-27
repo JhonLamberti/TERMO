@@ -142,7 +142,7 @@ export default function App() {
   const handleAddParticipant = () => {
     setState(prev => {
       const current = prev.participantesIntegracao || [];
-      if (current.length >= 30) return prev;
+      if (current.length >= 25) return prev;
       return {
         ...prev,
         participantesIntegracao: [
@@ -179,7 +179,7 @@ export default function App() {
   const handleSetParticipantCount = (targetCount: number) => {
     setState(prev => {
       const current = [...(prev.participantesIntegracao || [])];
-      const count = Math.min(30, Math.max(1, targetCount));
+      const count = Math.min(25, Math.max(1, targetCount));
       let updated: ParticipanteIntegracao[] = [];
       if (current.length >= count) {
         updated = current.slice(0, count);
@@ -1611,13 +1611,13 @@ export default function App() {
                           <div className="flex items-center gap-1.5">
                             <Users className="w-4 h-4 text-[#f37021]" />
                             <span className="text-xs font-bold text-slate-800">
-                              Participantes ({(state.participantesIntegracao || []).length}/30)
+                              Participantes ({(state.participantesIntegracao || []).length}/25)
                             </span>
                           </div>
                           <button
                             type="button"
                             onClick={handleAddParticipant}
-                            disabled={(state.participantesIntegracao || []).length >= 30}
+                            disabled={(state.participantesIntegracao || []).length >= 25}
                             className="flex items-center gap-1 bg-[#f37021] hover:bg-[#d65912] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[11px] font-bold px-2.5 py-1 rounded-md transition shadow-xs cursor-pointer"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -1639,7 +1639,7 @@ export default function App() {
                             </button>
                           </div>
                           <div className="grid grid-cols-4 gap-1.5">
-                            {[10, 15, 20, 30].map(n => (
+                            {[10, 15, 20, 25].map(n => (
                               <button
                                 key={n}
                                 type="button"
@@ -1655,7 +1655,7 @@ export default function App() {
                             ))}
                           </div>
                           <p className="text-[9.5px] text-slate-400 mt-1.5 leading-tight">
-                            Campos deixados em branco serão impressos como linhas vazias para preenchimento manual à caneta.
+                            A lista RH-016 foi otimizada para até 25 participantes em 1 única página A4. Linhas vazias são impressas para preenchimento manual à caneta.
                           </p>
                         </div>
 
@@ -1740,14 +1740,14 @@ export default function App() {
                           ))}
                         </div>
 
-                        {(state.participantesIntegracao || []).length < 30 && (
+                        {(state.participantesIntegracao || []).length < 25 && (
                           <button
                             type="button"
                             onClick={handleAddParticipant}
                             className="w-full flex items-center justify-center gap-1.5 py-2 border-2 border-dashed border-slate-250 hover:border-[#f37021] text-slate-600 hover:text-[#f37021] rounded-lg text-xs font-bold transition cursor-pointer bg-slate-50/50 hover:bg-orange-50/20"
                           >
                             <Plus className="w-3.5 h-3.5" />
-                            <span>Adicionar Mais um Participante ({(state.participantesIntegracao || []).length}/30)</span>
+                            <span>Adicionar Mais um Participante ({(state.participantesIntegracao || []).length}/25)</span>
                           </button>
                         )}
                       </div>
