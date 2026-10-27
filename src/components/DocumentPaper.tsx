@@ -20,6 +20,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     dataDoc,
     nome,
     cpf,
+    cnh,
     matricula,
     funcao,
     unidade,
@@ -88,6 +89,34 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     ctpsAviso,
     admissaoAviso,
     dataAviso,
+    motivoTransferencia,
+    dataSolicitacaoTransferencia,
+    contratoCedenteTransferencia,
+    contratoDestinoTransferencia,
+    localTrabalhoTransferencia,
+    regimeTrabalhoTransferencia,
+    dataInicioTransferencia,
+    funcaoTransferencia,
+    salarioTransferencia,
+    beneficiosTransferencia,
+    motivoFisioterapia,
+    dataInicioDuplaFuncao,
+    segundaFuncaoDuplaFuncao,
+    atividadesDuplaFuncao,
+    periodoInicioDuplaFuncao,
+    periodoFimDuplaFuncao,
+    gestorDuplaFuncao,
+    cargoGestorDuplaFuncao,
+    veiculoInfracao,
+    placaInfracao,
+    dataInfracao,
+    horarioInfracao,
+    autoInfracao,
+    orgaoAutuadorInfracao,
+    valorMultaInfracao,
+    descricaoInfracao,
+    gestorInfracao,
+    cargoGestorInfracao,
     responsavelEmpresa,
     cargoResponsavelEmpresa,
     admissaoDut,
@@ -133,6 +162,8 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     horarioTerminoIntegracao,
     responsavelIntegracao,
     localIntegracao,
+    conteudoComplementarIntegracao,
+    participantesIntegracao,
     numCartaoVt, recebeuVt, recebeuMobilidade, recebeuAlimentacao,
     usuarioWindows, senhaWindows, emailCorporativo, senhaEmail, senhaTeams,
     usuarioProtheus, senhaProtheus, outroSistemaNome, outroSistemaUsuario, outroSistemaSenha,
@@ -1366,148 +1397,217 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
       )}
 
       {/* ────────────────── 16. MODÊLO LISTA DE PRESENÇA ────────────────── */}
-      {modelo === 'listaPresenca' && (
-        <div className="space-y-8 print:space-y-0">
-          {/* PÁGINA 1 */}
-          <div className={`${paperClass} border border-dashed border-neutral-300 print:border-none`}>
-            <div>
-              <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH" />
-              
-              <div className="mb-4">
-                <table className="w-full text-[10.5px] font-sans border-collapse">
-                  <tbody>
-                    <tr className="border border-neutral-300">
-                      <td className="w-[30%] bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Empresa</td>
-                      <td className="p-1.5 text-neutral-900 font-medium">{getVal(razaoSocial)}</td>
-                    </tr>
-                    <tr className="border border-neutral-300">
-                      <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Data</td>
-                      <td className="p-1.5 text-neutral-900 font-medium">{getVal(dataIntegracao)}</td>
-                    </tr>
-                    <tr className="border border-neutral-300">
-                      <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Horário</td>
-                      <td className="p-1.5 text-neutral-900 font-medium">Início: {getVal(horarioInicioIntegracao)} &nbsp;&nbsp;&nbsp;&nbsp; Término: {getVal(horarioTerminoIntegracao)}</td>
-                    </tr>
-                    <tr className="border border-neutral-300">
-                      <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável pela Integração</td>
-                      <td className="p-1.5 text-neutral-900 font-medium">{getVal(responsavelIntegracao)}</td>
-                    </tr>
-                    <tr className="border border-neutral-300">
-                      <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Local</td>
-                      <td className="p-1.5 text-neutral-900 font-medium">{getVal(localIntegracao)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+      {modelo === 'listaPresenca' && (() => {
+        const rawParticipants = participantesIntegracao && participantesIntegracao.length > 0 
+          ? participantesIntegracao 
+          : Array.from({ length: 10 }, () => ({ nome: '', cargo: '', setor: '', cpfMatricula: '' }));
+        
+        // Limita a no máximo 30 participantes conforme solicitado
+        const participants = rawParticipants.slice(0, 30);
+        const total = participants.length;
+        const totalPages = total > 16 ? 3 : 2;
 
-              <div className="mb-4">
-                <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
-                  CONTEÚDO APLICADO NA INTEGRAÇÃO RH
-                </h3>
-                <ul className="space-y-1 text-[9.5px] text-neutral-800 font-sans grid grid-cols-2 gap-x-4">
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação institucional da empresa (história, missão, visão e valores)</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da estrutura organizacional e setores</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Código de ética e conduta profissional</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras e normas internas da empresa</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Jornada de trabalho, registro de ponto e cumprimento de horários</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Procedimentos para comunicação de faltas, atrasos e ausências</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação dos benefícios concedidos pela empresa</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Políticas de RH e canais de comunicação</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Responsabilidades e postura profissional esperada</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Uso adequado dos recursos disponibilizados pela empresa</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras de confidencialidade e proteção de informações (LGPD)</li>
-                  <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da liderança e área de atuação</li>
-                </ul>
-              </div>
+        const page1Items = participants.slice(0, 6);
+        const page2Items = totalPages === 3 ? participants.slice(6, 20) : participants.slice(6);
+        const page3Items = totalPages === 3 ? participants.slice(20) : [];
 
+        const renderParticipantRow = (p: { nome: string; cargo: string; setor: string; cpfMatricula: string }, index: number) => {
+          const numStr = String(index + 1).padStart(2, '0');
+          return (
+            <tr key={index} className="border border-neutral-300 h-7 text-[9.5px]">
+              <td className="p-1.5 text-center border-r border-neutral-300 text-neutral-600 font-mono font-medium">{numStr}</td>
+              <td className="p-1.5 border-r border-neutral-300 font-medium text-neutral-900 truncate max-w-[190px]">{p.nome || ''}</td>
+              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[110px]">{p.cargo || ''}</td>
+              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[100px]">{p.setor || ''}</td>
+              <td className="p-1.5 border-r border-neutral-300 text-neutral-800 truncate max-w-[110px]">{p.cpfMatricula || ''}</td>
+              <td className="p-1.5"></td>
+            </tr>
+          );
+        };
+
+        const renderTableHeader = () => (
+          <thead>
+            <tr className="border border-neutral-300 bg-neutral-50 text-neutral-700 text-[9.5px]">
+              <td className="p-1.5 font-bold border-r border-neutral-300 text-center w-[5%]">Nº</td>
+              <td className="p-1.5 font-bold border-r border-neutral-300 w-[30%]">Nome do Colaborador</td>
+              <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Cargo</td>
+              <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Setor</td>
+              <td className="p-1.5 font-bold border-r border-neutral-300 w-[17%]">CPF/Matrícula</td>
+              <td className="p-1.5 font-bold w-[18%] text-center">Assinatura</td>
+            </tr>
+          </thead>
+        );
+
+        return (
+          <div className="space-y-8 print:space-y-0">
+            {/* PÁGINA 1 */}
+            <div className={`${paperClass} border border-dashed border-neutral-300 print:border-none`}>
               <div>
-                <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
-                  PARTICIPANTES
-                </h3>
-                <table className="w-full text-[9.5px] font-sans border-collapse mt-1">
-                  <thead>
-                    <tr className="border border-neutral-300 bg-neutral-50 text-neutral-700">
-                      <td className="p-1.5 font-bold border-r border-neutral-300 text-center w-[5%]">Nº</td>
-                      <td className="p-1.5 font-bold border-r border-neutral-300 w-[30%]">Nome do Colaborador</td>
-                      <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Cargo</td>
-                      <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">Setor</td>
-                      <td className="p-1.5 font-bold border-r border-neutral-300 w-[15%]">CPF/Matrícula</td>
-                      <td className="p-1.5 font-bold w-[20%] text-center">Assinatura</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[1, 2, 3, 4, 5, 6].map(num => (
-                      <tr key={num} className="border border-neutral-300">
-                        <td className="p-1.5 text-center border-r border-neutral-300 text-neutral-500 font-mono">0{num}</td>
-                        <td className="p-1.5 border-r border-neutral-300"></td>
-                        <td className="p-1.5 border-r border-neutral-300"></td>
-                        <td className="p-1.5 border-r border-neutral-300"></td>
-                        <td className="p-1.5 border-r border-neutral-300"></td>
-                        <td className="p-1.5"></td>
+                <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH" />
+                
+                <div className="mb-3.5">
+                  <table className="w-full text-[10.5px] font-sans border-collapse">
+                    <tbody>
+                      <tr className="border border-neutral-300">
+                        <td className="w-[30%] bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Empresa</td>
+                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(razaoSocial)}</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <RenderFooter pageStr="Página 1 de 2" />
-            </div>
-          </div>
-
-          {/* PÁGINA 2 */}
-          <div className={paperClass}>
-            <div>
-              <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH (Cont.)" />
-              <table className="w-full text-[10px] font-sans border-collapse mt-6">
-                <thead>
-                  <tr className="border border-neutral-300 bg-neutral-50 text-neutral-700">
-                    <td className="p-2 font-bold border-r border-neutral-300 text-center w-[5%]">Nº</td>
-                    <td className="p-2 font-bold border-r border-neutral-300 w-[30%]">Nome do Colaborador</td>
-                    <td className="p-2 font-bold border-r border-neutral-300 w-[15%]">Cargo</td>
-                    <td className="p-2 font-bold border-r border-neutral-300 w-[15%]">Setor</td>
-                    <td className="p-2 font-bold border-r border-neutral-300 w-[15%]">CPF/Matrícula</td>
-                    <td className="p-2 font-bold w-[20%] text-center">Assinatura</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[7, 8, 9, 10].map(num => (
-                    <tr key={num} className="border border-neutral-300">
-                      <td className="p-3 text-center border-r border-neutral-300 text-neutral-500 font-mono">{num < 10 ? `0${num}` : num}</td>
-                      <td className="p-3 border-r border-neutral-300"></td>
-                      <td className="p-3 border-r border-neutral-300"></td>
-                      <td className="p-3 border-r border-neutral-300"></td>
-                      <td className="p-3 border-r border-neutral-300"></td>
-                      <td className="p-3"></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div className="text-[11px] font-sans leading-relaxed text-neutral-800 space-y-4 text-justify mt-8">
-                <p>
-                  Declaro que participei da Integração de RH, recebi as orientações necessárias referente às normas, procedimentos internos e responsabilidades aplicáveis à minha função.
-                </p>
-              </div>
-
-              <div className="flex flex-col text-[11px] font-sans mt-8 space-y-2">
-                <div className="flex gap-2 items-end">
-                  <span className="font-bold">Assinatura do Responsável RH:</span>
-                  <span className="border-b border-neutral-600 flex-1 ml-2 mr-24"></span>
+                      <tr className="border border-neutral-300">
+                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Data</td>
+                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(dataIntegracao)}</td>
+                      </tr>
+                      <tr className="border border-neutral-300">
+                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Horário</td>
+                        <td className="p-1.5 text-neutral-900 font-medium">Início: {getVal(horarioInicioIntegracao)} &nbsp;&nbsp;&nbsp;&nbsp; Término: {getVal(horarioTerminoIntegracao)}</td>
+                      </tr>
+                      <tr className="border border-neutral-300">
+                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Responsável pela Integração</td>
+                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(responsavelIntegracao)}</td>
+                      </tr>
+                      <tr className="border border-neutral-300">
+                        <td className="bg-neutral-50 p-1.5 font-bold text-neutral-700 border-r border-neutral-300">Local</td>
+                        <td className="p-1.5 text-neutral-900 font-medium">{getVal(localIntegracao)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div className="flex gap-2 items-end">
-                  <span className="font-bold">Data:</span>
-                  <span className="border-b border-neutral-600 w-32 ml-2"></span>
+
+                <div className="mb-3.5">
+                  <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
+                    CONTEÚDO APLICADO NA INTEGRAÇÃO RH
+                  </h3>
+                  <ul className="space-y-1 text-[9.5px] text-neutral-800 font-sans grid grid-cols-2 gap-x-4">
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação institucional da empresa (história, missão, visão e valores)</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da estrutura organizacional e setores</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Código de ética e conduta profissional</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras e normas internas da empresa</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Jornada de trabalho, registro de ponto e cumprimento de horários</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Procedimentos para comunicação de faltas, atrasos e ausências</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação dos benefícios concedidos pela empresa</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Políticas de RH e canais de comunicação</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Responsabilidades e postura profissional esperada</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Uso adequado dos recursos disponibilizados pela empresa</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Regras de confidencialidade e proteção de informações (LGPD)</li>
+                    <li className="flex items-start gap-1.5"><span className="border border-neutral-400 w-2.5 h-2.5 inline-block rounded-sm mt-0.5 shrink-0"></span> Apresentação da liderança e área de atuação</li>
+                  </ul>
+
+                  {/* Conteúdo adicional/complementar digitável */}
+                  {conteudoComplementarIntegracao && conteudoComplementarIntegracao.trim() !== '' && (
+                    <div className="mt-2.5 pt-2 border-t border-dashed border-neutral-300">
+                      <span className="text-[9px] font-bold text-neutral-700 uppercase tracking-wider block mb-1">
+                        Conteúdo Complementar / Específico:
+                      </span>
+                      <div className="text-[9.5px] text-neutral-800 font-sans whitespace-pre-wrap leading-relaxed bg-neutral-50 p-2 rounded border border-neutral-200">
+                        {conteudoComplementarIntegracao}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <h3 className="font-sans font-bold text-[10px] tracking-wider text-neutral-800 uppercase border-b border-neutral-300 pb-1 mb-2">
+                    PARTICIPANTES
+                  </h3>
+                  <table className="w-full text-[9.5px] font-sans border-collapse mt-1">
+                    {renderTableHeader()}
+                    <tbody>
+                      {page1Items.map((p, idx) => renderParticipantRow(p, idx))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
+              <div>
+                <RenderFooter pageStr={`Página 1 de ${totalPages}`} />
+              </div>
             </div>
-            
-            <div>
-              <RenderFooter pageStr="Página 2 de 2" />
+
+            {/* PÁGINA 2 */}
+            <div className={paperClass}>
+              <div>
+                <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH (Cont.)" />
+                
+                {page2Items.length > 0 ? (
+                  <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
+                    {renderTableHeader()}
+                    <tbody>
+                      {page2Items.map((p, idx) => renderParticipantRow(p, idx + 6))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="py-6 text-center text-xs text-neutral-400 italic">
+                    (Sem participantes adicionais nesta página)
+                  </div>
+                )}
+
+                {/* Se for 2 páginas, a declaração fica na Página 2 */}
+                {totalPages === 2 && (
+                  <>
+                    <div className="text-[11px] font-sans leading-relaxed text-neutral-800 space-y-4 text-justify mt-8">
+                      <p>
+                        Declaro que participei da Integração de RH, recebi as orientações necessárias referente às normas, procedimentos internos e responsabilidades aplicáveis à minha função.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col text-[11px] font-sans mt-8 space-y-2">
+                      <div className="flex gap-2 items-end">
+                        <span className="font-bold">Assinatura do Responsável RH:</span>
+                        <span className="border-b border-neutral-600 flex-1 ml-2 mr-24"></span>
+                      </div>
+                      <div className="flex gap-2 items-end">
+                        <span className="font-bold">Data:</span>
+                        <span className="border-b border-neutral-600 w-32 ml-2"></span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <div>
+                <RenderFooter pageStr={`Página 2 de ${totalPages}`} />
+              </div>
             </div>
+
+            {/* PÁGINA 3 (Quando total > 16 participantes) */}
+            {totalPages === 3 && (
+              <div className={paperClass}>
+                <div>
+                  <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH (Cont.)" />
+                  
+                  {page3Items.length > 0 && (
+                    <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
+                      {renderTableHeader()}
+                      <tbody>
+                        {page3Items.map((p, idx) => renderParticipantRow(p, idx + 20))}
+                      </tbody>
+                    </table>
+                  )}
+
+                  <div className="text-[11px] font-sans leading-relaxed text-neutral-800 space-y-4 text-justify mt-8">
+                    <p>
+                      Declaro que participei da Integração de RH, recebi as orientações necessárias referente às normas, procedimentos internos e responsabilidades aplicáveis à minha função.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col text-[11px] font-sans mt-8 space-y-2">
+                    <div className="flex gap-2 items-end">
+                      <span className="font-bold">Assinatura do Responsável RH:</span>
+                      <span className="border-b border-neutral-600 flex-1 ml-2 mr-24"></span>
+                    </div>
+                    <div className="flex gap-2 items-end">
+                      <span className="font-bold">Data:</span>
+                      <span className="border-b border-neutral-600 w-32 ml-2"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <RenderFooter pageStr="Página 3 de 3" />
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ────────────────── 17. MODÊLO CARTÕES DE BENEFÍCIOS ────────────────── */}
       {modelo === 'cartoesBeneficios' && (
@@ -1936,6 +2036,463 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ────────────────── 23. TRANSFERÊNCIA DE CONTRATO ────────────────── */}
+      {modelo === 'transferenciaContrato' && (
+        <div className={paperClass}>
+          <div>
+            <RenderHeader title="TERMO DE ALTERAÇÃO E TRANSFERÊNCIA DE CONTRATO" />
+            
+            <div className="text-[12px] font-sans text-neutral-900 mt-8">
+              <p className="mb-4">À {getVal(nome)},</p>
+              
+              <p className="mb-4 text-justify">
+                Pelo presente termo, a <strong>{getVal(razaoSocial)}</strong>, considerando a necessidade de mão de obra no contrato {getVal(contratoDestinoTransferencia)}, localizado na {getVal(localTrabalhoTransferencia)}, bem como a necessidade de reorganização de colaboradores entre seus contratos e localidades de trabalho, formaliza a alteração do contrato de lotação e do local de prestação dos serviços.
+              </p>
+
+              <p className="mb-8 text-justify">
+                A alteração ora formalizada {getVal(motivoTransferencia)}.
+              </p>
+
+              <div className="mb-8">
+                <h3 className="font-bold mb-2 uppercase text-[12px]">1. DADOS DA ALTERAÇÃO</h3>
+                <table className="w-full border-collapse border border-neutral-800 text-[11px] mb-6">
+                  <tbody>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50 w-1/3">Data da solicitação:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(dataSolicitacaoTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Contrato cedente:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(contratoCedenteTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Contrato de destino:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(contratoDestinoTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Local de trabalho:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(localTrabalhoTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Regime de trabalho:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(regimeTrabalhoTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Data de início:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(dataInicioTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Função:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(funcaoTransferencia)}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-neutral-800 p-1.5 font-bold bg-neutral-50">Salário:</td>
+                      <td className="border border-neutral-800 p-1.5">{getVal(salarioTransferencia)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <h3 className="font-bold mb-2 uppercase text-[12px]">2. BENEFÍCIOS</h3>
+                <div className="whitespace-pre-line text-[11px] mb-8">
+                  {getVal(beneficiosTransferencia)}
+                </div>
+
+                <h3 className="font-bold mb-2 uppercase text-[12px]">3. DISPOSIÇÕES GERAIS</h3>
+                <div className="text-justify space-y-4">
+                  <p>
+                    A partir da data de início indicada neste termo, o colaborador passará a prestar serviços no contrato de destino e no respectivo local de trabalho, observando o regime de jornada, as normas internas da empresa e os procedimentos aplicáveis ao contrato.
+                  </p>
+                  <p>
+                    As demais condições contratuais que não forem expressamente alteradas por este termo permanecem inalteradas e continuam válidas, observada a legislação trabalhista aplicável.
+                  </p>
+                  <p>
+                    O presente termo é emitido para formalizar a alteração de contrato/local de trabalho, dando ciência ao colaborador quanto às condições aqui descritas.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div>
+            <div className="mt-16 grid grid-cols-2 gap-8 text-center text-[10px] font-sans">
+              <div className="flex flex-col items-center">
+                <div className="w-full border-t border-neutral-800 pt-1.5">
+                  <div className="font-bold">{getVal(razaoSocial)}</div>
+                  <div className="text-neutral-600">Empresa</div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="w-full border-t border-neutral-800 pt-1.5">
+                  <div className="font-bold">{getVal(nome)}</div>
+                  <div className="text-neutral-600">Colaborador</div>
+                </div>
+              </div>
+            </div>
+            <RenderFooter pageStr="Página 1 de 1" />
+          </div>
+        </div>
+      )}
+
+      {/* ────────────────── 24. TERMO DE LIBERAÇÃO TEMPORÁRIA PARA TRATAMENTO DE FISIOTERAPIA ────────────────── */}
+      {modelo === 'liberacaoFisioterapia' && (
+        <div className={paperClass}>
+          <div>
+            <RenderHeader title="TERMO DE LIBERAÇÃO TEMPORÁRIA PARA TRATAMENTO DE FISIOTERAPIA" />
+            
+            <div className="text-[12px] font-sans text-neutral-800 space-y-3.5 text-justify mt-6 leading-relaxed">
+              <p>
+                Pelo presente instrumento, a <strong>{getVal(razaoSocial)}</strong>, doravante denominada <strong>EMPRESA</strong>, e o(a) colaborador(a) <strong>{getVal(nome)}</strong>, CPF nº <strong>{getVal(cpf)}</strong>, ocupante do cargo de <strong>{getVal(funcao)}</strong>, firmam o presente Termo de Liberação Temporária para Tratamento de Fisioterapia.
+              </p>
+
+              <p>
+                Considerando a necessidade de realização de tratamento fisioterapêutico pelo(a) colaborador(a), a <strong>EMPRESA</strong> autoriza, em caráter temporário, sua permanência em casa durante o período necessário para realização e conclusão do referido tratamento, {getVal(motivoFisioterapia)}.
+              </p>
+
+              <p>
+                Durante esse período, o(a) colaborador(a) deverá:
+              </p>
+
+              <ol className="list-decimal pl-6 space-y-1.5 text-neutral-800 font-sans">
+                <li>Realizar e acompanhar regularmente o tratamento fisioterapêutico recomendado;</li>
+                <li>Manter a <strong>EMPRESA</strong> informada sobre a evolução do tratamento e eventual alteração no período inicialmente previsto;</li>
+                <li>Apresentar, sempre que solicitado, os documentos médicos, relatórios, atestados ou comprovantes relacionados ao tratamento;</li>
+                <li>Comunicar imediatamente à <strong>EMPRESA</strong> a conclusão do tratamento ou sua liberação para retorno às atividades profissionais.</li>
+              </ol>
+
+              <p>
+                Após a conclusão do tratamento, o(a) colaborador(a) deverá comunicar o RH/Departamento Pessoal para que sejam adotados os procedimentos necessários para seu retorno às atividades, inclusive avaliação pelo serviço de saúde ocupacional/médico do trabalho, quando aplicável.
+              </p>
+
+              <p>
+                O retorno efetivo às atividades deverá ocorrer após a respectiva liberação e observância das condições de saúde e segurança necessárias ao exercício da função.
+              </p>
+
+              <p>
+                A presente liberação possui caráter <strong>temporário</strong>, permanecendo o vínculo empregatício vigente, não representando desligamento, alteração definitiva de função ou renúncia a quaisquer direitos trabalhistas.
+              </p>
+
+              <p>
+                O(a) colaborador(a) declara estar ciente de que deverá manter contato com a <strong>EMPRESA</strong> durante o período de tratamento e retornar às suas atividades assim que estiver devidamente liberado(a).
+              </p>
+
+              <p>
+                Por estarem cientes e de acordo, as partes assinam o presente termo.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-right text-[11px] text-neutral-700 font-sans my-3">
+              {getVal(dataDoc)}.
+            </div>
+
+            <div className="pt-3 border-t border-neutral-300 text-[10.5px] font-sans space-y-4">
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">COLABORADOR(A)</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(nome)}</div>
+                    <div><strong>CPF:</strong> {getVal(cpf)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-6 pt-1 text-[9.5px] text-center text-neutral-500">
+                    Assinatura do Colaborador
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">RESPONSÁVEL PELA EMPRESA</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(responsavelEmpresa)}</div>
+                    <div><strong>Cargo:</strong> {getVal(cargoResponsavelEmpresa)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-6 pt-1 text-[9.5px] text-center text-neutral-500">
+                    Assinatura do Responsável
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-neutral-200 flex justify-between items-end">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900">RECURSOS HUMANOS / DEPARTAMENTO PESSOAL</div>
+                  <div className="text-[10px] text-neutral-600">{getVal(razaoSocial)}</div>
+                </div>
+                <div className="w-48 border-t border-neutral-800 pt-1 text-[9.5px] text-center text-neutral-500">
+                  Visto RH / DP
+                </div>
+              </div>
+            </div>
+            <RenderFooter pageStr="Página 1 de 1" />
+          </div>
+        </div>
+      )}
+
+      {/* ────────────────── 25. TERMO DE EXERCÍCIO TEMPORÁRIO DE DUPLA FUNÇÃO ────────────────── */}
+      {modelo === 'duplaFuncao' && (
+        <div className={paperClass}>
+          <div>
+            <RenderHeader title="TERMO DE EXERCÍCIO TEMPORÁRIO DE DUPLA FUNÇÃO" />
+            
+            <div className="text-[11.5px] font-sans text-neutral-800 space-y-2.5 text-justify mt-4 leading-relaxed">
+              <p>
+                Pelo presente instrumento, de um lado, <strong>{getVal(razaoSocial)}</strong>, doravante denominada <strong>EMPRESA</strong>, e, de outro, o(a) colaborador(a) <strong>{getVal(nome)}</strong>, CPF nº <strong>{getVal(cpf)}</strong>, atualmente ocupante do cargo de <strong>{getVal(funcao)}</strong>, firmam o presente <strong>Termo de Exercício Temporário de Dupla Função</strong>, mediante as condições abaixo.
+              </p>
+
+              <div>
+                <h4 className="font-bold text-[11.5px] uppercase text-neutral-900 mb-0.5">1. DA DESIGNAÇÃO TEMPORÁRIA</h4>
+                <p>
+                  A partir de <strong>{getVal(dataInicioDuplaFuncao)}</strong>, o(a) colaborador(a), além das atribuições inerentes à sua função atual de <strong>{getVal(funcao)}</strong>, passará a exercer, temporariamente, atividades relacionadas à função de <strong>{getVal(segundaFuncaoDuplaFuncao)}</strong>.
+                </p>
+                <p className="mt-1">
+                  A presente designação decorre de necessidade temporária operacional e organizacional da <strong>EMPRESA</strong>, não representando alteração definitiva do cargo de origem.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[11.5px] uppercase text-neutral-900 mb-0.5">2. DAS ATIVIDADES</h4>
+                <p>
+                  Durante o período de vigência deste termo, o(a) colaborador(a) desempenhará as atividades correspondentes às duas funções, observadas sua qualificação, capacidade técnica, jornada de trabalho, normas internas e procedimentos de saúde e segurança da <strong>EMPRESA</strong>.
+                </p>
+                <p className="mt-1 mb-1">
+                  As principais atividades relacionadas à função temporariamente assumida serão:
+                </p>
+                <div className="bg-neutral-50 border border-neutral-300 rounded p-2 text-[10.5px] text-neutral-800 whitespace-pre-line leading-snug">
+                  {getVal(atividadesDuplaFuncao)}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[11.5px] uppercase text-neutral-900 mb-0.5">3. DO PERÍODO</h4>
+                <p>
+                  O exercício temporário da dupla função ocorrerá no período de <strong>{getVal(periodoInicioDuplaFuncao)}</strong> a <strong>{getVal(periodoFimDuplaFuncao)}</strong>.
+                </p>
+                <p className="mt-1">
+                  Caso a necessidade que originou a designação seja encerrada antes da data prevista, a <strong>EMPRESA</strong> poderá determinar o retorno antecipado do(a) colaborador(a) ao exercício exclusivo de sua função de origem.
+                </p>
+                <p className="mt-1">
+                  Eventual necessidade de continuidade após o período estabelecido deverá ser objeto de nova formalização.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[11.5px] uppercase text-neutral-900 mb-0.5">4. DO RETORNO À FUNÇÃO DE ORIGEM</h4>
+                <p>
+                  Com o encerramento da designação temporária, o(a) colaborador(a) retornará ao exercício exclusivo das atribuições correspondentes à sua função de origem, salvo nova formalização entre as partes.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[11.5px] uppercase text-neutral-900 mb-0.5">5. DAS DEMAIS CONDIÇÕES</h4>
+                <p>
+                  Permanecem inalteradas as demais condições estabelecidas no contrato individual de trabalho que não tenham sido expressamente modificadas pelo presente termo.
+                </p>
+                <p className="mt-1">
+                  Este documento tem como finalidade registrar e formalizar a designação temporária para o exercício concomitante das funções acima identificadas.
+                </p>
+                <p className="mt-1">
+                  O(a) colaborador(a) declara estar ciente das atividades e responsabilidades decorrentes da presente designação temporária.
+                </p>
+                <p className="mt-1">
+                  E, por estarem cientes e de acordo, as partes firmam o presente termo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-right text-[11px] text-neutral-700 font-sans my-2">
+              {getVal(dataDoc)}.
+            </div>
+
+            <div className="pt-3 border-t border-neutral-300 text-[10.5px] font-sans space-y-3">
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">COLABORADOR(A)</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(nome)}</div>
+                    <div><strong>CPF:</strong> {getVal(cpf)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-5 pt-1 text-[9.5px] text-center text-neutral-500">
+                    Assinatura do Colaborador
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">GESTOR RESPONSÁVEL</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(gestorDuplaFuncao)}</div>
+                    <div><strong>Cargo:</strong> {getVal(cargoGestorDuplaFuncao)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-5 pt-1 text-[9.5px] text-center text-neutral-500">
+                    Assinatura do Gestor
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-neutral-200 flex justify-between items-end">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900">RECURSOS HUMANOS / DEPARTAMENTO PESSOAL</div>
+                  <div className="text-[10px] text-neutral-600">{getVal(razaoSocial)}</div>
+                </div>
+                <div className="w-48 border-t border-neutral-800 pt-1 text-[9.5px] text-center text-neutral-500">
+                  Visto RH / DP
+                </div>
+              </div>
+            </div>
+            <RenderFooter pageStr="Página 1 de 1" />
+          </div>
+        </div>
+      )}
+
+      {/* ────────────────── 26. TERMO DE RESPONSABILIDADE POR INFRAÇÕES DE TRÂNSITO E AUTORIZAÇÃO PARA DESCONTO ────────────────── */}
+      {modelo === 'infracaoTransito' && (
+        <div className={paperClass}>
+          <div>
+            <RenderHeader title="TERMO DE RESPONSABILIDADE POR INFRAÇÕES DE TRÂNSITO E AUTORIZAÇÃO PARA DESCONTO" />
+            
+            <div className="text-[10.5px] font-sans text-neutral-800 space-y-2 text-justify mt-2 leading-relaxed">
+              <p>
+                Pelo presente instrumento, de um lado, <strong>{getVal(razaoSocial)}</strong>, doravante denominada <strong>EMPRESA</strong>, e, de outro, o(a) colaborador(a) <strong>{getVal(nome)}</strong>, CPF nº <strong>{getVal(cpf)}</strong>, CNH nº <strong>{getVal(cnh)}</strong>, ocupante do cargo de <strong>{getVal(funcao)}</strong>, firmam o presente Termo de Responsabilidade por Infrações de Trânsito e Autorização para Desconto.
+              </p>
+
+              <div>
+                <h4 className="font-bold text-[10.5px] uppercase text-neutral-900 mb-0.5">1. DA RESPONSABILIDADE NA CONDUÇÃO DO VEÍCULO</h4>
+                <p>
+                  O(a) colaborador(a), quando autorizado(a) a conduzir veículo próprio, locado ou disponibilizado pela EMPRESA para execução de suas atividades profissionais, compromete-se a observar integralmente a legislação de trânsito, as normas internas da EMPRESA e as regras de segurança aplicáveis.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[10.5px] uppercase text-neutral-900 mb-0.5">2. DAS INFRAÇÕES DE TRÂNSITO</h4>
+                <p>
+                  Quando for identificada infração de trânsito ocorrida durante o período em que o veículo estiver comprovadamente sob responsabilidade e condução do(a) colaborador(a), este(a) declara estar ciente de que poderá ser indicado(a) como <strong>condutor(a) responsável pela infração</strong>, conforme os procedimentos e prazos estabelecidos pelo órgão de trânsito competente.
+                </p>
+                <p className="mt-1">
+                  O(a) colaborador(a) compromete-se a fornecer e/ou assinar, dentro do prazo solicitado, os documentos necessários para sua correta identificação como condutor(a), quando aplicável.
+                </p>
+                <p className="mt-1">
+                  A eventual atribuição de pontuação, penalidades ou demais consequências administrativas relacionadas à CNH observará a legislação de trânsito e a decisão do órgão competente.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[10.5px] uppercase text-neutral-900 mb-0.5">3. DA AUTORIZAÇÃO PARA DESCONTO</h4>
+                <p>
+                  O(a) colaborador(a) <strong>autoriza expressamente</strong>, observados os requisitos legais aplicáveis, o desconto em folha de pagamento dos valores correspondentes às multas de trânsito decorrentes de infrações praticadas enquanto estiver comprovadamente na condução do veículo.
+                </p>
+                <p className="mt-1">
+                  Antes da realização do desconto, a EMPRESA deverá identificar a infração e o veículo envolvido, bem como disponibilizar ao(à) colaborador(a) as informações correspondentes.
+                </p>
+                <p className="mt-1">
+                  A presente autorização não abrange multas decorrentes de fatos cuja responsabilidade não seja atribuível ao(à) colaborador(a).
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[10.5px] uppercase text-neutral-900 mb-0.5">4. DA IDENTIFICAÇÃO DA INFRAÇÃO</h4>
+                <p className="mb-1">
+                  Sempre que aplicável, poderão ser registrados os seguintes dados:
+                </p>
+                <div className="bg-neutral-50/70 border border-neutral-300 rounded p-2 text-[10px] space-y-1">
+                  <div className="flex">
+                    <span className="font-bold min-w-[65px] text-neutral-700">Veículo:</span>
+                    <span className="flex-1 border-b border-neutral-400 font-medium px-1">{veiculoInfracao || '_____________________________________________________'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="font-bold min-w-[65px] text-neutral-700">Placa:</span>
+                    <span className="flex-1 border-b border-neutral-400 font-medium px-1">{placaInfracao || '_____________________________________________________'}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex">
+                      <span className="font-bold min-w-[105px] text-neutral-700">Data da infração:</span>
+                      <span className="flex-1 border-b border-neutral-400 font-medium px-1">{dataInfracao || '//_________'}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-bold min-w-[55px] text-neutral-700">Horário:</span>
+                      <span className="flex-1 border-b border-neutral-400 font-medium px-1">{horarioInfracao || '____________________'}</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex">
+                      <span className="font-bold min-w-[105px] text-neutral-700">Auto de Infração:</span>
+                      <span className="flex-1 border-b border-neutral-400 font-medium px-1">{autoInfracao || '____________________'}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-bold min-w-[100px] text-neutral-700">Órgão autuador:</span>
+                      <span className="flex-1 border-b border-neutral-400 font-medium px-1">{orgaoAutuadorInfracao || '____________________'}</span>
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <span className="font-bold min-w-[95px] text-neutral-700">Valor da multa:</span>
+                    <span className="flex-1 border-b border-neutral-400 font-medium px-1">{valorMultaInfracao ? `R$ ${valorMultaInfracao}` : 'R$ _________________________________________________'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="font-bold min-w-[135px] text-neutral-700">Descrição da infração:</span>
+                    <span className="flex-1 border-b border-neutral-400 font-medium px-1">{descricaoInfracao || '_____________________________________________'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-[10.5px] uppercase text-neutral-900 mb-0.5">5. DA CIÊNCIA DO COLABORADOR</h4>
+                <p className="mb-0.5">O(a) colaborador(a) declara estar ciente de que:</p>
+                <p className="pl-2">I – deverá cumprir as normas previstas na legislação de trânsito durante a utilização dos veículos;</p>
+                <p className="pl-2">II – deverá comunicar imediatamente à EMPRESA qualquer ocorrência, acidente, autuação ou situação envolvendo o veículo;</p>
+                <p className="pl-2">III – quando comprovadamente responsável pela condução no momento da infração, deverá colaborar com o procedimento de identificação do condutor;</p>
+                <p className="pl-2">IV – a indicação do condutor e eventual atribuição de pontos ou penalidades serão realizadas conforme a legislação e os procedimentos estabelecidos pelo órgão de trânsito competente;</p>
+                <p className="pl-2">V – o desconto de valores relativos às multas observará as condições estabelecidas neste termo e a legislação trabalhista aplicável.</p>
+                <p className="mt-1">
+                  Por estarem cientes e de acordo, firmam o presente termo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-right text-[10.5px] text-neutral-700 font-sans my-2">
+              {getVal(dataDoc)}.
+            </div>
+
+            <div className="pt-2 border-t border-neutral-300 text-[10px] font-sans space-y-2.5">
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">COLABORADOR(A)</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(nome)}</div>
+                    <div><strong>CPF:</strong> {getVal(cpf)}</div>
+                    <div><strong>CNH:</strong> {getVal(cnh)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-4 pt-0.5 text-[9px] text-center text-neutral-500">
+                    Assinatura do Colaborador
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-bold uppercase text-neutral-900 mb-1">GESTOR RESPONSÁVEL</div>
+                  <div className="text-neutral-700 leading-tight">
+                    <div><strong>Nome:</strong> {getVal(gestorInfracao)}</div>
+                    <div><strong>Cargo:</strong> {getVal(cargoGestorInfracao)}</div>
+                  </div>
+                  <div className="w-full border-t border-neutral-800 mt-4 pt-0.5 text-[9px] text-center text-neutral-500">
+                    Assinatura do Gestor
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-1.5 border-t border-neutral-200 flex justify-between items-end">
+                <div>
+                  <div className="font-bold uppercase text-neutral-900">RECURSOS HUMANOS / DEPARTAMENTO PESSOAL</div>
+                  <div className="text-[9.5px] text-neutral-600">{getVal(razaoSocial)}</div>
+                </div>
+                <div className="w-48 border-t border-neutral-800 pt-0.5 text-[9px] text-center text-neutral-500">
+                  Visto RH / DP
+                </div>
+              </div>
+            </div>
+            <RenderFooter pageStr="Página 1 de 1" />
           </div>
         </div>
       )}

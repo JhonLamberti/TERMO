@@ -24,10 +24,11 @@ import {
   Eye,
   Settings,
   FileCheck,
-  Download
+  Download,
+  Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { FormState, INITIAL_VALUES, ModeloTermo } from './types';
+import { FormState, INITIAL_VALUES, ModeloTermo, ParticipanteIntegracao } from './types';
 import DocumentPaper from './components/DocumentPaper';
 
 const STORAGE_KEY = 'gerador_termos_fta_v2';
@@ -47,6 +48,12 @@ export default function App() {
           merged = { ...merged, ...parsed.campos };
         } else if (parsed.modelo) {
           merged = { ...merged, ...parsed };
+        }
+        if (!merged.participantesIntegracao || !Array.isArray(merged.participantesIntegracao) || merged.participantesIntegracao.length === 0) {
+          merged.participantesIntegracao = INITIAL_VALUES.participantesIntegracao;
+        }
+        if (typeof merged.conteudoComplementarIntegracao !== 'string') {
+          merged.conteudoComplementarIntegracao = '';
         }
         return merged;
       } catch (e) {
@@ -110,7 +117,11 @@ export default function App() {
       errataDesligamento: 'RH-019',
       alteracaoFuncao: 'RH-020',
       suspensao: 'RH-021',
-      avisoPrevioIndenizado: 'RH-022'
+      avisoPrevioIndenizado: 'RH-022',
+      transferenciaContrato: 'RH-023',
+      liberacaoFisioterapia: 'RH-024',
+      duplaFuncao: 'RH-025',
+      infracaoTransito: 'RH-026'
     };
     setState(prev => ({
       ...prev,
@@ -125,6 +136,79 @@ export default function App() {
       ...prev,
       [key]: value
     }));
+  };
+
+  // Participant manipulation helpers for Lista de Presença
+  const handleAddParticipant = () => {
+    setState(prev => {
+      const current = prev.participantesIntegracao || [];
+      if (current.length >= 30) return prev;
+      return {
+        ...prev,
+        participantesIntegracao: [
+          ...current,
+          { nome: '', cargo: '', setor: '', cpfMatricula: '' }
+        ]
+      };
+    });
+  };
+
+  const handleRemoveParticipant = (index: number) => {
+    setState(prev => {
+      const current = prev.participantesIntegracao || [];
+      if (current.length <= 1) return prev;
+      return {
+        ...prev,
+        participantesIntegracao: current.filter((_, i) => i !== index)
+      };
+    });
+  };
+
+  const handleUpdateParticipant = (index: number, field: keyof ParticipanteIntegracao, value: string) => {
+    setState(prev => {
+      const current = [...(prev.participantesIntegracao || [])];
+      if (!current[index]) return prev;
+      current[index] = { ...current[index], [field]: value };
+      return {
+        ...prev,
+        participantesIntegracao: current
+      };
+    });
+  };
+
+  const handleSetParticipantCount = (targetCount: number) => {
+    setState(prev => {
+      const current = [...(prev.participantesIntegracao || [])];
+      const count = Math.min(30, Math.max(1, targetCount));
+      let updated: ParticipanteIntegracao[] = [];
+      if (current.length >= count) {
+        updated = current.slice(0, count);
+      } else {
+        updated = [...current];
+        while (updated.length < count) {
+          updated.push({ nome: '', cargo: '', setor: '', cpfMatricula: '' });
+        }
+      }
+      return {
+        ...prev,
+        participantesIntegracao: updated
+      };
+    });
+  };
+
+  const handleClearParticipantsData = () => {
+    setState(prev => {
+      const count = (prev.participantesIntegracao || []).length || 10;
+      return {
+        ...prev,
+        participantesIntegracao: Array.from({ length: count }, () => ({
+          nome: '',
+          cargo: '',
+          setor: '',
+          cpfMatricula: ''
+        }))
+      };
+    });
   };
 
   // Handle Logo Upload base64
@@ -381,6 +465,10 @@ export default function App() {
                       <option value="alteracaoFuncao">RH-020 | Termo de Alteração de Função</option>
                       <option value="suspensao">RH-021 | Carta de Suspensão</option>
                       <option value="avisoPrevioIndenizado">RH-022 | Aviso Prévio Indenizado</option>
+                      <option value="transferenciaContrato">RH-023 | Termo de Alteração e Transferência de Contrato</option>
+                      <option value="liberacaoFisioterapia">RH-024 | Termo de Liberação Temporária para Tratamento de Fisioterapia</option>
+                      <option value="duplaFuncao">RH-025 | Termo de Exercício Temporário de Dupla Função</option>
+                      <option value="infracaoTransito">RH-026 | Termo de Responsabilidade por Infrações de Trânsito e Autorização para Desconto</option>
                     </select>
                   </div>
 
@@ -1442,7 +1530,7 @@ export default function App() {
 
                   {/* ── CONDITIONAL RENDER: LISTA PRESENCA FIELDS ── */}
                   {state.modelo === 'listaPresenca' && (
-                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                    <div className="space-y-4 border-t border-slate-150 pt-3">
                       <div className="flex items-center gap-1.5 text-slate-800 font-bold text-xs mb-1">
                         <FileText className="w-4 h-4 text-[#f37021]" />
                         <span>Lista de Presença - Integração</span>
@@ -1498,6 +1586,170 @@ export default function App() {
                           onChange={(e) => setField('responsavelIntegracao', e.target.value)}
                           className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
                         />
+                      </div>
+
+                      {/* Campo livre abaixo do Conteúdo Aplicado */}
+                      <div className="bg-amber-50/70 border border-amber-200 p-3 rounded-lg space-y-1.5">
+                        <label className="block text-[10px] font-bold text-amber-900 uppercase">
+                          Conteúdo Complementar / Específico
+                        </label>
+                        <p className="text-[10px] text-amber-700/90 leading-tight">
+                          Texto livre exibido abaixo dos 12 tópicos padrão da integração RH.
+                        </p>
+                        <textarea
+                          rows={3}
+                          value={state.conteudoComplementarIntegracao}
+                          onChange={(e) => setField('conteudoComplementarIntegracao', e.target.value)}
+                          placeholder="Digite aqui tópicos extras abordados, especificidades do treinamento ou observações gerais..."
+                          className="w-full text-xs bg-white border border-amber-300 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021] outline-none"
+                        />
+                      </div>
+
+                      {/* Gerenciamento de Participantes (até 30) */}
+                      <div className="border-t border-slate-200 pt-3 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <Users className="w-4 h-4 text-[#f37021]" />
+                            <span className="text-xs font-bold text-slate-800">
+                              Participantes ({(state.participantesIntegracao || []).length}/30)
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleAddParticipant}
+                            disabled={(state.participantesIntegracao || []).length >= 30}
+                            className="flex items-center gap-1 bg-[#f37021] hover:bg-[#d65912] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[11px] font-bold px-2.5 py-1 rounded-md transition shadow-xs cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Adicionar</span>
+                          </button>
+                        </div>
+
+                        {/* Atalhos para preenchimento rápido de linhas */}
+                        <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">Quantidade de Linhas:</span>
+                            <button
+                              type="button"
+                              onClick={handleClearParticipantsData}
+                              className="text-[10px] text-slate-500 hover:text-rose-600 underline cursor-pointer"
+                              title="Limpa os dados mantendo as linhas"
+                            >
+                              Limpar textos
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-4 gap-1.5">
+                            {[10, 15, 20, 30].map(n => (
+                              <button
+                                key={n}
+                                type="button"
+                                onClick={() => handleSetParticipantCount(n)}
+                                className={`text-[10.5px] py-1 rounded border font-medium transition cursor-pointer ${
+                                  (state.participantesIntegracao || []).length === n
+                                    ? 'bg-[#f37021] text-white border-[#f37021] font-bold'
+                                    : 'bg-white border-slate-250 text-slate-700 hover:border-slate-400'
+                                }`}
+                              >
+                                {n} linhas
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-[9.5px] text-slate-400 mt-1.5 leading-tight">
+                            Campos deixados em branco serão impressos como linhas vazias para preenchimento manual à caneta.
+                          </p>
+                        </div>
+
+                        {/* Lista dos cards dos participantes */}
+                        <div className="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+                          {(state.participantesIntegracao || []).map((part, idx) => (
+                            <div 
+                              key={idx} 
+                              className="bg-white border border-slate-200 rounded-lg p-2.5 space-y-2 shadow-xs hover:border-slate-300 transition"
+                            >
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                <span className="text-[11px] font-bold font-mono text-[#f37021] bg-orange-50 px-1.5 py-0.5 rounded">
+                                  Participante Nº {String(idx + 1).padStart(2, '0')}
+                                </span>
+                                {(state.participantesIntegracao || []).length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveParticipant(idx)}
+                                    className="text-slate-400 hover:text-rose-600 transition p-1 rounded hover:bg-rose-50 cursor-pointer"
+                                    title="Remover participante"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+
+                              <div className="space-y-2">
+                                <div>
+                                  <label className="block text-[9.5px] font-semibold text-slate-500 uppercase mb-0.5">
+                                    Nome do Colaborador
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={part.nome}
+                                    onChange={(e) => handleUpdateParticipant(idx, 'nome', e.target.value)}
+                                    placeholder="Ex: Carlos Eduardo da Silva"
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded p-1.5 focus:bg-white focus:ring-1 focus:ring-[#f37021]"
+                                  />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-[9.5px] font-semibold text-slate-500 uppercase mb-0.5">
+                                      Cargo
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={part.cargo}
+                                      onChange={(e) => handleUpdateParticipant(idx, 'cargo', e.target.value)}
+                                      placeholder="Ex: Soldador I"
+                                      className="w-full text-xs bg-slate-50 border border-slate-200 rounded p-1.5 focus:bg-white focus:ring-1 focus:ring-[#f37021]"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[9.5px] font-semibold text-slate-500 uppercase mb-0.5">
+                                      Setor
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={part.setor}
+                                      onChange={(e) => handleUpdateParticipant(idx, 'setor', e.target.value)}
+                                      placeholder="Ex: Operações"
+                                      className="w-full text-xs bg-slate-50 border border-slate-200 rounded p-1.5 focus:bg-white focus:ring-1 focus:ring-[#f37021]"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="block text-[9.5px] font-semibold text-slate-500 uppercase mb-0.5">
+                                    CPF ou Matrícula
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={part.cpfMatricula}
+                                    onChange={(e) => handleUpdateParticipant(idx, 'cpfMatricula', e.target.value)}
+                                    placeholder="Ex: 123.456.789-00 ou MAT-0982"
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded p-1.5 focus:bg-white focus:ring-1 focus:ring-[#f37021]"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {(state.participantesIntegracao || []).length < 30 && (
+                          <button
+                            type="button"
+                            onClick={handleAddParticipant}
+                            className="w-full flex items-center justify-center gap-1.5 py-2 border-2 border-dashed border-slate-250 hover:border-[#f37021] text-slate-600 hover:text-[#f37021] rounded-lg text-xs font-bold transition cursor-pointer bg-slate-50/50 hover:bg-orange-50/20"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Adicionar Mais um Participante ({(state.participantesIntegracao || []).length}/30)</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1803,6 +2055,370 @@ export default function App() {
                       </div>
                     </div>
                   )}
+
+                  {/* ── CONDITIONAL RENDER: TRANSFERÊNCIA DE CONTRATO ── */}
+                  {state.modelo === 'transferenciaContrato' && (
+                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Data da Solicitação</label>
+                          <input
+                            type="text"
+                            value={state.dataSolicitacaoTransferencia}
+                            onChange={(e) => setField('dataSolicitacaoTransferencia', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Data de Início</label>
+                          <input
+                            type="text"
+                            value={state.dataInicioTransferencia}
+                            onChange={(e) => setField('dataInicioTransferencia', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Contrato Cedente</label>
+                          <input
+                            type="text"
+                            value={state.contratoCedenteTransferencia}
+                            onChange={(e) => setField('contratoCedenteTransferencia', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Contrato Destino</label>
+                          <input
+                            type="text"
+                            value={state.contratoDestinoTransferencia}
+                            onChange={(e) => setField('contratoDestinoTransferencia', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Local de Trabalho</label>
+                        <input
+                          type="text"
+                          value={state.localTrabalhoTransferencia}
+                          onChange={(e) => setField('localTrabalhoTransferencia', e.target.value)}
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Regime de Trabalho (Jornada)</label>
+                        <input
+                          type="text"
+                          value={state.regimeTrabalhoTransferencia}
+                          onChange={(e) => setField('regimeTrabalhoTransferencia', e.target.value)}
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Função</label>
+                          <input
+                            type="text"
+                            value={state.funcaoTransferencia}
+                            onChange={(e) => setField('funcaoTransferencia', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Salário</label>
+                          <input
+                            type="text"
+                            value={state.salarioTransferencia}
+                            onChange={(e) => setField('salarioTransferencia', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Motivo da Alteração (Texto)</label>
+                        <textarea
+                          rows={3}
+                          value={state.motivoTransferencia}
+                          onChange={(e) => setField('motivoTransferencia', e.target.value)}
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Benefícios</label>
+                        <textarea
+                          rows={6}
+                          value={state.beneficiosTransferencia}
+                          onChange={(e) => setField('beneficiosTransferencia', e.target.value)}
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── CONDITIONAL RENDER: LIBERAÇÃO TEMPORÁRIA FISIOTERAPIA ── */}
+                  {state.modelo === 'liberacaoFisioterapia' && (
+                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5 text-[11px] text-amber-800">
+                        Os dados do colaborador (Nome, CPF e Cargo) são obtidos da aba <strong>Colaborador</strong>. Abaixo você pode personalizar o responsável pela empresa que assina o termo.
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Responsável pela Empresa</label>
+                          <input
+                            type="text"
+                            value={state.responsavelEmpresa}
+                            onChange={(e) => setField('responsavelEmpresa', e.target.value.toUpperCase())}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Cargo do Responsável</label>
+                          <input
+                            type="text"
+                            value={state.cargoResponsavelEmpresa}
+                            onChange={(e) => setField('cargoResponsavelEmpresa', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Justificativa / Observação do Tratamento</label>
+                        <textarea
+                          rows={2}
+                          value={state.motivoFisioterapia}
+                          onChange={(e) => setField('motivoFisioterapia', e.target.value)}
+                          placeholder="conforme documentação e/ou orientação médica apresentada"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── CONDITIONAL RENDER: DUPLA FUNÇÃO ── */}
+                  {state.modelo === 'duplaFuncao' && (
+                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Função Temporariamente Assumida</label>
+                        <input
+                          type="text"
+                          value={state.segundaFuncaoDuplaFuncao}
+                          onChange={(e) => setField('segundaFuncaoDuplaFuncao', e.target.value)}
+                          placeholder="Ex: Operador de Máquinas, Assistente Operacional"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">A partir de</label>
+                          <input
+                            type="text"
+                            value={state.dataInicioDuplaFuncao}
+                            onChange={(e) => setField('dataInicioDuplaFuncao', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Período De</label>
+                          <input
+                            type="text"
+                            value={state.periodoInicioDuplaFuncao}
+                            onChange={(e) => setField('periodoInicioDuplaFuncao', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Até</label>
+                          <input
+                            type="text"
+                            value={state.periodoFimDuplaFuncao}
+                            onChange={(e) => setField('periodoFimDuplaFuncao', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Principais Atividades da Função Assumida</label>
+                        <textarea
+                          rows={4}
+                          value={state.atividadesDuplaFuncao}
+                          onChange={(e) => setField('atividadesDuplaFuncao', e.target.value)}
+                          placeholder="Descreva as atividades ou itens..."
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Gestor Responsável (Nome)</label>
+                          <input
+                            type="text"
+                            value={state.gestorDuplaFuncao}
+                            onChange={(e) => setField('gestorDuplaFuncao', e.target.value.toUpperCase())}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Cargo do Gestor</label>
+                          <input
+                            type="text"
+                            value={state.cargoGestorDuplaFuncao}
+                            onChange={(e) => setField('cargoGestorDuplaFuncao', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── CONDITIONAL RENDER: INFRAÇÃO DE TRÂNSITO ── */}
+                  {state.modelo === 'infracaoTransito' && (
+                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5 text-[11px] text-amber-800">
+                        Os dados do veículo e da autuação podem ser preenchidos abaixo ou deixados em branco para preenchimento manual no documento físico.
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">CNH do Colaborador</label>
+                        <input
+                          type="text"
+                          value={state.cnh}
+                          onChange={(e) => setField('cnh', e.target.value)}
+                          placeholder="Nº da CNH"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-mono focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Veículo (Marca / Modelo)</label>
+                          <input
+                            type="text"
+                            value={state.veiculoInfracao}
+                            onChange={(e) => setField('veiculoInfracao', e.target.value)}
+                            placeholder="Ex: Fiat Strada / VW Gol"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Placa do Veículo</label>
+                          <input
+                            type="text"
+                            value={state.placaInfracao}
+                            onChange={(e) => setField('placaInfracao', e.target.value.toUpperCase())}
+                            placeholder="Ex: ABC-1234 / ABC1D23"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-mono uppercase focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Data da Infração</label>
+                          <input
+                            type="text"
+                            value={state.dataInfracao}
+                            onChange={(e) => setField('dataInfracao', e.target.value)}
+                            placeholder="DD/MM/AAAA"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Horário da Infração</label>
+                          <input
+                            type="text"
+                            value={state.horarioInfracao}
+                            onChange={(e) => setField('horarioInfracao', e.target.value)}
+                            placeholder="Ex: 14:35"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Auto de Infração (Nº)</label>
+                          <input
+                            type="text"
+                            value={state.autoInfracao}
+                            onChange={(e) => setField('autoInfracao', e.target.value)}
+                            placeholder="Ex: R12345678"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-mono focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Órgão Autuador</label>
+                          <input
+                            type="text"
+                            value={state.orgaoAutuadorInfracao}
+                            onChange={(e) => setField('orgaoAutuadorInfracao', e.target.value)}
+                            placeholder="Ex: PRF / DETRAN-ES / DNIT"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Valor da Multa (R$)</label>
+                        <input
+                          type="text"
+                          value={state.valorMultaInfracao}
+                          onChange={(e) => setField('valorMultaInfracao', e.target.value)}
+                          placeholder="Ex: 195,23"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-mono focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Descrição da Infração</label>
+                        <textarea
+                          rows={2}
+                          value={state.descricaoInfracao}
+                          onChange={(e) => setField('descricaoInfracao', e.target.value)}
+                          placeholder="Ex: Transitar em velocidade superior à máxima permitida em até 20%"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Gestor Responsável (Nome)</label>
+                          <input
+                            type="text"
+                            value={state.gestorInfracao}
+                            onChange={(e) => setField('gestorInfracao', e.target.value.toUpperCase())}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Cargo do Gestor</label>
+                          <input
+                            type="text"
+                            value={state.cargoGestorInfracao}
+                            onChange={(e) => setField('cargoGestorInfracao', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -1835,7 +2451,7 @@ export default function App() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-2.5">
                     <div>
                       <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">CPF</label>
                       <input
@@ -1844,6 +2460,16 @@ export default function App() {
                         onChange={(e) => setField('cpf', e.target.value)}
                         placeholder="000.000.000-00"
                         className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#f37021] focus:border-transparent outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">CNH</label>
+                      <input
+                        type="text"
+                        value={state.cnh}
+                        onChange={(e) => setField('cnh', e.target.value)}
+                        placeholder="Nº da CNH"
+                        className="w-full text-xs bg-white border border-slate-300 rounded-lg p-2.5 font-mono focus:ring-2 focus:ring-[#f37021] focus:border-transparent outline-none"
                       />
                     </div>
                     <div>

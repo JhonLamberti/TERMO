@@ -20,7 +20,18 @@ export type ModeloTermo =
   | 'errataDesligamento'
   | 'alteracaoFuncao'
   | 'suspensao'
-  | 'avisoPrevioIndenizado';
+  | 'avisoPrevioIndenizado'
+  | 'transferenciaContrato'
+  | 'liberacaoFisioterapia'
+  | 'duplaFuncao'
+  | 'infracaoTransito';
+
+export interface ParticipanteIntegracao {
+  nome: string;
+  cargo: string;
+  setor: string;
+  cpfMatricula: string;
+}
 
 export interface FormState {
   logoData: string;
@@ -35,6 +46,7 @@ export interface FormState {
   dataDoc: string;
   nome: string;
   cpf: string;
+  cnh: string;
   matricula: string;
   funcao: string;
   unidade: string;
@@ -169,6 +181,8 @@ export interface FormState {
   horarioTerminoIntegracao: string;
   responsavelIntegracao: string;
   localIntegracao: string;
+  conteudoComplementarIntegracao: string;
+  participantesIntegracao: ParticipanteIntegracao[];
   // Errata
   textoErrata: string;
   // Alteração de Função
@@ -184,6 +198,38 @@ export interface FormState {
   ctpsAviso: string;
   admissaoAviso: string;
   dataAviso: string;
+  // Transferência de Contrato
+  motivoTransferencia: string;
+  dataSolicitacaoTransferencia: string;
+  contratoCedenteTransferencia: string;
+  contratoDestinoTransferencia: string;
+  localTrabalhoTransferencia: string;
+  regimeTrabalhoTransferencia: string;
+  dataInicioTransferencia: string;
+  funcaoTransferencia: string;
+  salarioTransferencia: string;
+  beneficiosTransferencia: string;
+  // Liberação Fisioterapia
+  motivoFisioterapia: string;
+  // Dupla Função
+  dataInicioDuplaFuncao: string;
+  segundaFuncaoDuplaFuncao: string;
+  atividadesDuplaFuncao: string;
+  periodoInicioDuplaFuncao: string;
+  periodoFimDuplaFuncao: string;
+  gestorDuplaFuncao: string;
+  cargoGestorDuplaFuncao: string;
+  // Infração de Trânsito
+  veiculoInfracao: string;
+  placaInfracao: string;
+  dataInfracao: string;
+  horarioInfracao: string;
+  autoInfracao: string;
+  orgaoAutuadorInfracao: string;
+  valorMultaInfracao: string;
+  descricaoInfracao: string;
+  gestorInfracao: string;
+  cargoGestorInfracao: string;
   // Cartoes Beneficios
   numCartaoVt: string;
   recebeuVt: 'SIM' | 'NÃO' | '';
@@ -217,6 +263,7 @@ export const INITIAL_VALUES: FormState = {
   dataDoc: 'Vitória - ES, 14 de junho de 2026',
   nome: 'NOME DO COLABORADOR',
   cpf: '000.000.000-00',
+  cnh: '00000000000',
   matricula: '000000',
   funcao: 'FUNÇÃO ATUAL',
   unidade: 'CONTRATO / UNIDADE',
@@ -351,6 +398,19 @@ export const INITIAL_VALUES: FormState = {
   horarioTerminoIntegracao: '00:00',
   responsavelIntegracao: 'NOME DO RESPONSÁVEL',
   localIntegracao: 'LOCAL DA INTEGRAÇÃO',
+  conteudoComplementarIntegracao: '',
+  participantesIntegracao: [
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+    { nome: '', cargo: '', setor: '', cpfMatricula: '' },
+  ],
   // Errata
   textoErrata: 'Por meio deste documento, a empresa informa que o Aviso de Desligamento por Término de Contrato anteriormente entregue ao colaborador continha erro material na data informada.\n\nEsclarecemos que o equívoco refere-se exclusivamente à data constante no aviso, não havendo qualquer alteração na efetiva data de encerramento do contrato de trabalho.\n\nO desligamento do colaborador ocorreu em {dataDesligamento}, em razão do término do contrato, conforme previsto, sendo esta a data considerada para todos os efeitos legais, inclusive para o encerramento do vínculo empregatício, apuração da jornada, fechamento do ponto e cálculo das verbas rescisórias.\n\nDessa forma, fica retificada apenas a data constante no aviso anteriormente emitido, permanecendo inalteradas todas as demais informações e os efeitos decorrentes do desligamento.\n\nPara que produza os devidos efeitos, firma-se a presente errata.',
   // Alteração de Função
@@ -366,6 +426,38 @@ export const INITIAL_VALUES: FormState = {
   ctpsAviso: '00000000 / 00000',
   admissaoAviso: '__/__/____',
   dataAviso: '__/__/____',
+  // Transferência de Contrato
+  motivoTransferencia: 'decorre de solicitação do próprio colaborador, que manifestou interesse na mudança de Estado, sendo realizada com o objetivo de atender à sua solicitação e possibilitar a continuidade do vínculo empregatício junto à empresa',
+  dataSolicitacaoTransferencia: '__/__/____',
+  contratoCedenteTransferencia: 'FTA - ',
+  contratoDestinoTransferencia: 'FTA - ',
+  localTrabalhoTransferencia: 'ENDEREÇO DO LOCAL DE TRABALHO',
+  regimeTrabalhoTransferencia: 'SEG A QUI de 07:00 às 17:00 e SEX de 07:00 às 16:00',
+  dataInicioTransferencia: '__/__/____',
+  funcaoTransferencia: 'Mecânico I',
+  salarioTransferencia: 'R$ 0,00',
+  beneficiosTransferencia: '• Vale Alimentação: R$ 0,00 fixo mensal;\n\n• Vale Refeição: R$ 0,00 por dia efetivamente trabalhado;\n\n• Desjejum: R$ 0,00 por dia efetivamente trabalhado;\n\n• Seguro de Vida;\n\n• Plano de Saúde e Odontológico;\n\n• TotalPass.',
+  // Liberação Fisioterapia
+  motivoFisioterapia: 'conforme documentação e/ou orientação médica apresentada',
+  // Dupla Função
+  dataInicioDuplaFuncao: '__/__/2026',
+  segundaFuncaoDuplaFuncao: 'ASSISTENTE OPERACIONAL',
+  atividadesDuplaFuncao: '• Apoiar nas rotinas operacionais e administrativas da área designada;\n• Auxiliar no controle de materiais, ferramentas e equipamentos sob as normas de segurança;\n• Executar tarefas de suporte e preenchimento de relatórios da função temporariamente assumida.',
+  periodoInicioDuplaFuncao: '__/__/2026',
+  periodoFimDuplaFuncao: '__/__/2026',
+  gestorDuplaFuncao: 'GESTOR RESPONSÁVEL',
+  cargoGestorDuplaFuncao: 'COORDENADOR / GESTOR DA ÁREA',
+  // Infração de Trânsito
+  veiculoInfracao: '',
+  placaInfracao: '',
+  dataInfracao: '__/__/____',
+  horarioInfracao: '__:__',
+  autoInfracao: '',
+  orgaoAutuadorInfracao: '',
+  valorMultaInfracao: '0,00',
+  descricaoInfracao: '',
+  gestorInfracao: 'GESTOR RESPONSÁVEL',
+  cargoGestorInfracao: 'COORDENADOR / GESTOR',
   // Cartoes Beneficios
   numCartaoVt: '00000000000000-0',
   recebeuVt: 'SIM',
