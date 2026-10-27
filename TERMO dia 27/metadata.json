@@ -1,0 +1,6 @@
+{
+  "name": "Gerador de Termos FTA",
+  "description": "Gerador e customizador de termos de aditivos de jornada, promoção e substituição temporária.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
