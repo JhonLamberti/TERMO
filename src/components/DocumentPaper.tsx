@@ -1443,7 +1443,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
             {/* PÁGINA 1 */}
             <div className={`${paperClass} border border-dashed border-neutral-300 print:border-none`}>
               <div>
-                <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH" />
+                <RenderHeader title="LISTA DE PRESENÇA" />
                 
                 <div className="mb-3.5">
                   <table className="w-full text-[10.5px] font-sans border-collapse">
@@ -1524,7 +1524,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
             {/* PÁGINA 2 */}
             <div className={paperClass}>
               <div>
-                <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH (Cont.)" />
+                <RenderHeader title="LISTA DE PRESENÇA" />
                 
                 {page2Items.length > 0 ? (
                   <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
@@ -1571,7 +1571,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
             {totalPages === 3 && (
               <div className={paperClass}>
                 <div>
-                  <RenderHeader title="LISTA DE PRESENÇA – INTEGRAÇÃO RH (Cont.)" />
+                  <RenderHeader title="LISTA DE PRESENÇA" />
                   
                   {page3Items.length > 0 && (
                     <table className="w-full text-[9.5px] font-sans border-collapse mt-4">
