@@ -167,7 +167,16 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     numCartaoVt, recebeuVt, recebeuMobilidade, recebeuAlimentacao,
     usuarioWindows, senhaWindows, emailCorporativo, senhaEmail, senhaTeams,
     usuarioProtheus, senhaProtheus, outroSistemaNome, outroSistemaUsuario, outroSistemaSenha,
-    msgPrimeirosAcessos
+    msgPrimeirosAcessos,
+    tituloReconhecimento,
+    subtituloReconhecimento,
+    tipoCabecalhoReconhecimento,
+    msgReconhecimento,
+    motivoDestaqueReconhecimento,
+    detalheDestaqueReconhecimento,
+    fechamentoReconhecimento,
+    gestorReconhecimento,
+    cargoGestorReconhecimento
   } = state;
 
   // Helper safe defaults to display placeholder underlines if empty
@@ -2402,6 +2411,113 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
                 </div>
               </div>
             </div>
+            <RenderFooter pageStr="Página 1 de 1" />
+          </div>
+        </div>
+      )}
+
+      {/* ────────────────── 27. MODÊLO RECONHECIMENTO PROFISSIONAL ────────────────── */}
+      {modelo === 'reconhecimento' && (
+        <div className={paperClass}>
+          <div>
+            {/* Cabeçalho selecionável: Estilo Carta de Homenagem (igual RH-002) ou Cabeçalho Corporativo com Código RH-027 */}
+            {tipoCabecalhoReconhecimento === 'corporativo' ? (
+              <RenderHeader title="TERMO DE RECONHECIMENTO PROFISSIONAL" />
+            ) : (
+              <div className="flex items-center justify-between border-b border-neutral-100 pb-3 mb-6">
+                <div className="w-[180px] h-[75px] flex items-center">
+                  {logoData ? (
+                    <img
+                      src={logoData}
+                      alt="Logo da empresa"
+                      className="max-w-[180px] max-h-[70px] object-contain block"
+                    />
+                  ) : (
+                    <div className="font-sans font-black text-4xl tracking-tighter text-[#f37021] leading-none">
+                      FTA
+                    </div>
+                  )}
+                </div>
+                <div className="text-right text-[10.5px] text-neutral-600 font-sans leading-tight">
+                  <div className="font-bold text-neutral-900">{getVal(razaoSocial)}</div>
+                  <div className="text-neutral-500 font-mono text-[9.5px]">{getVal(siteEmpresa)}</div>
+                  <div className="text-[9px] text-neutral-400 mt-0.5">Código: {getVal(codigo)} | Rev: {getVal(revisao)}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Banner de Homenagem / Reconhecimento */}
+            <div className="my-5 text-center">
+              <div className="inline-block text-[11px] tracking-widest font-extrabold text-[#f37021] bg-[#f37021]/10 px-3.5 py-1 rounded-full mb-3 uppercase">
+                {subtituloReconhecimento || 'COMUNICADO ESPECIAL • RECONHECIMENTO PROFISSIONAL'}
+              </div>
+              <h1 className="text-[24px] font-sans font-black tracking-tight text-neutral-900 uppercase">
+                {tituloReconhecimento || 'PARABÉNS PELO SEU DESEMPENHO E DEDICAÇÃO!'}
+              </h1>
+            </div>
+
+            {/* Saudação e Identificação do Colaborador */}
+            <div className="bg-neutral-50 border border-neutral-200/80 rounded-md p-3 mb-4 flex items-center justify-between text-[11.5px] font-sans">
+              <div>
+                <span className="text-neutral-500 text-[10px] uppercase font-bold tracking-wider block">Homenageado(a)</span>
+                <span className="font-extrabold text-[13.5px] text-neutral-950">{getVal(nome)}</span>
+              </div>
+              <div className="text-right text-neutral-700 text-[11px] leading-tight space-y-0.5">
+                <div><span className="text-neutral-400 text-[9.5px] uppercase font-semibold">Função:</span> <strong className="text-neutral-900">{getVal(funcao)}</strong></div>
+                <div><span className="text-neutral-400 text-[9.5px] uppercase font-semibold">Matrícula:</span> <strong className="text-neutral-900">{getVal(matricula)}</strong> &nbsp;|&nbsp; <span className="text-neutral-400 text-[9.5px] uppercase font-semibold">Unidade:</span> <strong className="text-neutral-900">{getVal(unidade)}</strong></div>
+              </div>
+            </div>
+
+            {/* Texto Principal de Reconhecimento */}
+            <div className="text-[12.5px] font-sans leading-relaxed text-neutral-800 space-y-3">
+              <p className="font-bold text-neutral-950 text-[13.5px]">
+                Prezado(a) {getVal(nome)},
+              </p>
+
+              <div className="text-justify indent-6 min-h-[1.5em] whitespace-pre-wrap leading-relaxed">
+                {msgReconhecimento || '_______________________________________________________'}
+              </div>
+
+              {/* Caixa de Destaque - Idêntica ao estilo RH-002 */}
+              <div className="bg-[#fff4ec] border-l-4 border-[#f37021] p-3.5 my-4 rounded-r-md">
+                <div className="text-[11px] font-bold text-[#f37021] uppercase tracking-wider mb-1">
+                  {motivoDestaqueReconhecimento || 'Mérito e Atuação de Destaque'}
+                </div>
+                <p className="text-[12.5px] text-neutral-900 leading-snug">
+                  {detalheDestaqueReconhecimento || 'Reconhecimento conferido pelas contribuições notáveis na execução das atividades com excelência, ética, iniciativa e cooperação exemplar junto à equipe.'}
+                </p>
+              </div>
+
+              {/* Mensagem de Encerramento Inspiradora */}
+              <p className="text-center font-bold text-[#f37021] pt-1 text-[13px]">
+                {fechamentoReconhecimento || 'Desejamos contínuo sucesso, realizações e crescimento compartilhado em sua trajetória no Grupo FTA!'}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            {/* Data */}
+            <div className="text-right text-[11.5px] text-neutral-700 font-sans my-3">
+              {getVal(dataDoc)}.
+            </div>
+
+            {/* Bloco de Assinatura - Apenas Gestor / Liderança Responsável */}
+            <div className="pt-4 border-t border-neutral-300 text-[10px] font-sans">
+              <div className="max-w-[340px] mx-auto text-center">
+                <div className="w-full border-t border-neutral-800 pt-1.5 text-[10px] leading-tight">
+                  <div className="font-bold uppercase text-neutral-900 text-[11px]">
+                    {getVal(gestorReconhecimento)}
+                  </div>
+                  <div className="text-neutral-600 text-[10px]">
+                    {getVal(cargoGestorReconhecimento)}
+                  </div>
+                </div>
+                <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mt-1">
+                  Gestor / Liderança Responsável
+                </div>
+              </div>
+            </div>
+
             <RenderFooter pageStr="Página 1 de 1" />
           </div>
         </div>

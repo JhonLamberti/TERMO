@@ -24,7 +24,8 @@ export type ModeloTermo =
   | 'transferenciaContrato'
   | 'liberacaoFisioterapia'
   | 'duplaFuncao'
-  | 'infracaoTransito';
+  | 'infracaoTransito'
+  | 'reconhecimento';
 
 export interface ParticipanteIntegracao {
   nome: string;
@@ -248,6 +249,16 @@ export interface FormState {
   outroSistemaUsuario: string;
   outroSistemaSenha: string;
   msgPrimeirosAcessos: string;
+  // Reconhecimento fields
+  tituloReconhecimento: string;
+  subtituloReconhecimento: string;
+  tipoCabecalhoReconhecimento: 'comunicado' | 'corporativo';
+  msgReconhecimento: string;
+  motivoDestaqueReconhecimento: string;
+  detalheDestaqueReconhecimento: string;
+  fechamentoReconhecimento: string;
+  gestorReconhecimento: string;
+  cargoGestorReconhecimento: string;
 }
 
 export const INITIAL_VALUES: FormState = {
@@ -476,4 +487,14 @@ export const INITIAL_VALUES: FormState = {
   outroSistemaUsuario: '',
   outroSistemaSenha: '',
   msgPrimeirosAcessos: 'Seja bem-vindo(a)!\nAbaixo estão os acessos necessários para iniciar suas atividades.',
+  // Reconhecimento fields
+  tituloReconhecimento: 'PARABÉNS PELO SEU DESEMPENHO E DEDICAÇÃO!',
+  subtituloReconhecimento: 'Comunicado Especial • Reconhecimento de Mérito',
+  tipoCabecalhoReconhecimento: 'comunicado',
+  msgReconhecimento: 'É com imensa satisfação e orgulho que o Grupo FTA presta este merecido reconhecimento pela sua dedicação, comprometimento e postura profissional exemplar.\n\nSua atuação constante tem sido de fundamental importância para o alcance dos nossos objetivos, demonstrando competência técnica, espírito de equipe, pontualidade e engajamento genuíno com os valores de segurança, qualidade e excelência da nossa empresa.\n\nAgradecemos imensamente pela sua valorosa contribuição diária e por fazer a diferença em nosso time. Que este reconhecimento seja um estímulo contínuo para o seu desenvolvimento e para novas conquistas profissionais.',
+  motivoDestaqueReconhecimento: 'Mérito e Atuação de Destaque',
+  detalheDestaqueReconhecimento: 'Reconhecimento conferido pelas contribuições notáveis na execução das atividades com excelência, ética, iniciativa e cooperação exemplar junto à equipe.',
+  fechamentoReconhecimento: 'Desejamos contínuo sucesso, realizações e crescimento compartilhado em sua trajetória no Grupo FTA!',
+  gestorReconhecimento: 'NOME DO GESTOR RESPONSÁVEL',
+  cargoGestorReconhecimento: 'GESTOR / LIDERANÇA IMEDIATA',
 };

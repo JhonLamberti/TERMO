@@ -121,7 +121,8 @@ export default function App() {
       transferenciaContrato: 'RH-023',
       liberacaoFisioterapia: 'RH-024',
       duplaFuncao: 'RH-025',
-      infracaoTransito: 'RH-026'
+      infracaoTransito: 'RH-026',
+      reconhecimento: 'RH-027'
     };
     setState(prev => ({
       ...prev,
@@ -469,6 +470,7 @@ export default function App() {
                       <option value="liberacaoFisioterapia">RH-024 | Termo de Liberação Temporária para Tratamento de Fisioterapia</option>
                       <option value="duplaFuncao">RH-025 | Termo de Exercício Temporário de Dupla Função</option>
                       <option value="infracaoTransito">RH-026 | Termo de Responsabilidade por Infrações de Trânsito e Autorização para Desconto</option>
+                      <option value="reconhecimento">RH-027 | Termo de Reconhecimento Profissional</option>
                     </select>
                   </div>
 
@@ -2413,6 +2415,150 @@ export default function App() {
                             type="text"
                             value={state.cargoGestorInfracao}
                             onChange={(e) => setField('cargoGestorInfracao', e.target.value)}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── CONDITIONAL RENDER: RECONHECIMENTO PROFISSIONAL ── */}
+                  {state.modelo === 'reconhecimento' && (
+                    <div className="space-y-3.5 border-t border-slate-150 pt-3">
+                      <div className="flex items-center gap-1.5 text-slate-800 font-bold text-xs mb-1">
+                        <Award className="w-4 h-4 text-[#f37021]" />
+                        <span>Termo de Reconhecimento Profissional</span>
+                      </div>
+
+                      {/* Seletor do Estilo do Cabeçalho */}
+                      <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg space-y-1.5">
+                        <label className="block text-[10px] font-bold text-slate-600 uppercase">Estilo Visual do Cabeçalho</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setState(prev => ({ ...prev, tipoCabecalhoReconhecimento: 'comunicado' }))}
+                            className={`py-1.5 px-2 text-[11px] font-bold rounded border transition cursor-pointer text-center ${
+                              state.tipoCabecalhoReconhecimento === 'comunicado'
+                                ? 'bg-[#f37021] text-white border-[#f37021] shadow-xs'
+                                : 'bg-white border-slate-300 text-slate-700 hover:border-slate-400'
+                            }`}
+                          >
+                            Carta de Homenagem
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setState(prev => ({ ...prev, tipoCabecalhoReconhecimento: 'corporativo' }))}
+                            className={`py-1.5 px-2 text-[11px] font-bold rounded border transition cursor-pointer text-center ${
+                              state.tipoCabecalhoReconhecimento === 'corporativo'
+                                ? 'bg-[#f37021] text-white border-[#f37021] shadow-xs'
+                                : 'bg-white border-slate-300 text-slate-700 hover:border-slate-400'
+                            }`}
+                          >
+                            Padrão Corporativo
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Título da Homenagem</label>
+                        <input
+                          type="text"
+                          value={state.tituloReconhecimento}
+                          onChange={(e) => setField('tituloReconhecimento', e.target.value.toUpperCase())}
+                          placeholder="Ex: PARABÉNS PELO SEU DESEMPENHO E DEDICAÇÃO!"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-bold focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Subtítulo / Selo Superior</label>
+                        <input
+                          type="text"
+                          value={state.subtituloReconhecimento}
+                          onChange={(e) => setField('subtituloReconhecimento', e.target.value)}
+                          placeholder="Ex: Comunicado Especial • Reconhecimento de Mérito"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase">Mensagem de Reconhecimento</label>
+                          <button
+                            type="button"
+                            onClick={() => setField('msgReconhecimento', INITIAL_VALUES.msgReconhecimento)}
+                            className="text-[10px] text-slate-400 hover:text-[#f37021] underline cursor-pointer"
+                          >
+                            Restaurar texto padrão
+                          </button>
+                        </div>
+                        <textarea
+                          rows={5}
+                          value={state.msgReconhecimento}
+                          onChange={(e) => setField('msgReconhecimento', e.target.value)}
+                          className="w-full text-xs bg-white border border-slate-350 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021] outline-none leading-relaxed"
+                          placeholder="Digite o texto de elogio e reconhecimento..."
+                        />
+                        <span className="text-[10px] text-slate-400 leading-tight block mt-1">
+                          Texto principal ressaltando a dedicação, comprometimento e valores do colaborador.
+                        </span>
+                      </div>
+
+                      {/* Caixa de Destaque */}
+                      <div className="bg-orange-50/50 border border-orange-200 p-3 rounded-lg space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#f37021]">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Caixa de Destaque</span>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Título do Destaque</label>
+                          <input
+                            type="text"
+                            value={state.motivoDestaqueReconhecimento}
+                            onChange={(e) => setField('motivoDestaqueReconhecimento', e.target.value)}
+                            placeholder="Ex: Mérito e Atuação de Destaque"
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Detalhamento das Conquistas / Qualidades</label>
+                          <textarea
+                            rows={2}
+                            value={state.detalheDestaqueReconhecimento}
+                            onChange={(e) => setField('detalheDestaqueReconhecimento', e.target.value)}
+                            placeholder="Descreva as qualidades, entregas e pontos fortes em destaque..."
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Frase de Encerramento Motivacional</label>
+                        <input
+                          type="text"
+                          value={state.fechamentoReconhecimento}
+                          onChange={(e) => setField('fechamentoReconhecimento', e.target.value)}
+                          placeholder="Ex: Desejamos contínuo sucesso e crescimento compartilhado!"
+                          className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Gestor Responsável (Nome)</label>
+                          <input
+                            type="text"
+                            value={state.gestorReconhecimento}
+                            onChange={(e) => setField('gestorReconhecimento', e.target.value.toUpperCase())}
+                            className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Cargo do Gestor</label>
+                          <input
+                            type="text"
+                            value={state.cargoGestorReconhecimento}
+                            onChange={(e) => setField('cargoGestorReconhecimento', e.target.value)}
                             className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
                           />
                         </div>
