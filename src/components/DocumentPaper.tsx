@@ -1,12 +1,13 @@
 import { ReactNode } from 'react';
-import { FormState } from '../types';
+import { FormState, INITIAL_VALUES } from '../types';
 
 interface DocumentPaperProps {
   state: FormState;
   zoom: number; // Scale factor 0.5 to 1.5
+  id?: string;
 }
 
-export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
+export default function DocumentPaper({ state, zoom, id = 'printable-content' }: DocumentPaperProps) {
   const {
     logoData,
     modelo,
@@ -168,15 +169,15 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     usuarioWindows, senhaWindows, emailCorporativo, senhaEmail, senhaTeams,
     usuarioProtheus, senhaProtheus, outroSistemaNome, outroSistemaUsuario, outroSistemaSenha,
     msgPrimeirosAcessos,
-    tituloReconhecimento,
-    subtituloReconhecimento,
-    tipoCabecalhoReconhecimento,
-    msgReconhecimento,
-    motivoDestaqueReconhecimento,
-    detalheDestaqueReconhecimento,
-    fechamentoReconhecimento,
-    gestorReconhecimento,
-    cargoGestorReconhecimento
+    tituloReconhecimento = INITIAL_VALUES.tituloReconhecimento,
+    subtituloReconhecimento = INITIAL_VALUES.subtituloReconhecimento,
+    tipoCabecalhoReconhecimento = 'comunicado',
+    msgReconhecimento = INITIAL_VALUES.msgReconhecimento,
+    motivoDestaqueReconhecimento = INITIAL_VALUES.motivoDestaqueReconhecimento,
+    detalheDestaqueReconhecimento = INITIAL_VALUES.detalheDestaqueReconhecimento,
+    fechamentoReconhecimento = INITIAL_VALUES.fechamentoReconhecimento,
+    gestorReconhecimento = INITIAL_VALUES.gestorReconhecimento,
+    cargoGestorReconhecimento = INITIAL_VALUES.cargoGestorReconhecimento
   } = state;
 
   // Helper safe defaults to display placeholder underlines if empty
@@ -319,7 +320,7 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
     <div 
       className="origin-top transition-transform duration-200"
       style={{ transform: `scale(${zoom})` }}
-      id="printable-content"
+      id={id}
     >
       {/* ────────────────── 1. MODÊLO JORNADA ────────────────── */}
       {modelo === 'jornada' && (
@@ -2475,22 +2476,22 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
               </p>
 
               <div className="text-justify indent-6 min-h-[1.5em] whitespace-pre-wrap leading-relaxed">
-                {msgReconhecimento || '_______________________________________________________'}
+                {msgReconhecimento || INITIAL_VALUES.msgReconhecimento}
               </div>
 
               {/* Caixa de Destaque - Idêntica ao estilo RH-002 */}
               <div className="bg-[#fff4ec] border-l-4 border-[#f37021] p-3.5 my-4 rounded-r-md">
                 <div className="text-[11px] font-bold text-[#f37021] uppercase tracking-wider mb-1">
-                  {motivoDestaqueReconhecimento || 'Mérito e Atuação de Destaque'}
+                  {motivoDestaqueReconhecimento || INITIAL_VALUES.motivoDestaqueReconhecimento}
                 </div>
                 <p className="text-[12.5px] text-neutral-900 leading-snug">
-                  {detalheDestaqueReconhecimento || 'Reconhecimento conferido pelas contribuições notáveis na execução das atividades com excelência, ética, iniciativa e cooperação exemplar junto à equipe.'}
+                  {detalheDestaqueReconhecimento || INITIAL_VALUES.detalheDestaqueReconhecimento}
                 </p>
               </div>
 
               {/* Mensagem de Encerramento Inspiradora */}
               <p className="text-center font-bold text-[#f37021] pt-1 text-[13px]">
-                {fechamentoReconhecimento || 'Desejamos contínuo sucesso, realizações e crescimento compartilhado em sua trajetória no Grupo FTA!'}
+                {fechamentoReconhecimento || INITIAL_VALUES.fechamentoReconhecimento}
               </p>
             </div>
           </div>
@@ -2506,10 +2507,10 @@ export default function DocumentPaper({ state, zoom }: DocumentPaperProps) {
               <div className="max-w-[340px] mx-auto text-center">
                 <div className="w-full border-t border-neutral-800 pt-1.5 text-[10px] leading-tight">
                   <div className="font-bold uppercase text-neutral-900 text-[11px]">
-                    {getVal(gestorReconhecimento)}
+                    {getVal(gestorReconhecimento || INITIAL_VALUES.gestorReconhecimento)}
                   </div>
                   <div className="text-neutral-600 text-[10px]">
-                    {getVal(cargoGestorReconhecimento)}
+                    {getVal(cargoGestorReconhecimento || INITIAL_VALUES.cargoGestorReconhecimento)}
                   </div>
                 </div>
                 <div className="text-[9px] uppercase tracking-wider text-neutral-500 font-semibold mt-1">

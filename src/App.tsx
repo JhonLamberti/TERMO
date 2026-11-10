@@ -55,6 +55,15 @@ export default function App() {
         if (typeof merged.conteudoComplementarIntegracao !== 'string') {
           merged.conteudoComplementarIntegracao = '';
         }
+        if (!merged.tituloReconhecimento) merged.tituloReconhecimento = INITIAL_VALUES.tituloReconhecimento;
+        if (!merged.subtituloReconhecimento) merged.subtituloReconhecimento = INITIAL_VALUES.subtituloReconhecimento;
+        if (!merged.tipoCabecalhoReconhecimento) merged.tipoCabecalhoReconhecimento = 'comunicado';
+        if (!merged.msgReconhecimento) merged.msgReconhecimento = INITIAL_VALUES.msgReconhecimento;
+        if (!merged.motivoDestaqueReconhecimento) merged.motivoDestaqueReconhecimento = INITIAL_VALUES.motivoDestaqueReconhecimento;
+        if (!merged.detalheDestaqueReconhecimento) merged.detalheDestaqueReconhecimento = INITIAL_VALUES.detalheDestaqueReconhecimento;
+        if (!merged.fechamentoReconhecimento) merged.fechamentoReconhecimento = INITIAL_VALUES.fechamentoReconhecimento;
+        if (!merged.gestorReconhecimento) merged.gestorReconhecimento = INITIAL_VALUES.gestorReconhecimento;
+        if (!merged.cargoGestorReconhecimento) merged.cargoGestorReconhecimento = INITIAL_VALUES.cargoGestorReconhecimento;
         return merged;
       } catch (e) {
         console.warn('Erro ao carregar dados salvos:', e);
@@ -124,11 +133,25 @@ export default function App() {
       infracaoTransito: 'RH-026',
       reconhecimento: 'RH-027'
     };
-    setState(prev => ({
-      ...prev,
-      modelo,
-      codigo: codes[modelo]
-    }));
+    setState(prev => {
+      const updated = {
+        ...prev,
+        modelo,
+        codigo: codes[modelo]
+      };
+      if (modelo === 'reconhecimento') {
+        if (!updated.tituloReconhecimento) updated.tituloReconhecimento = INITIAL_VALUES.tituloReconhecimento;
+        if (!updated.subtituloReconhecimento) updated.subtituloReconhecimento = INITIAL_VALUES.subtituloReconhecimento;
+        if (!updated.tipoCabecalhoReconhecimento) updated.tipoCabecalhoReconhecimento = 'comunicado';
+        if (!updated.msgReconhecimento) updated.msgReconhecimento = INITIAL_VALUES.msgReconhecimento;
+        if (!updated.motivoDestaqueReconhecimento) updated.motivoDestaqueReconhecimento = INITIAL_VALUES.motivoDestaqueReconhecimento;
+        if (!updated.detalheDestaqueReconhecimento) updated.detalheDestaqueReconhecimento = INITIAL_VALUES.detalheDestaqueReconhecimento;
+        if (!updated.fechamentoReconhecimento) updated.fechamentoReconhecimento = INITIAL_VALUES.fechamentoReconhecimento;
+        if (!updated.gestorReconhecimento) updated.gestorReconhecimento = INITIAL_VALUES.gestorReconhecimento;
+        if (!updated.cargoGestorReconhecimento) updated.cargoGestorReconhecimento = INITIAL_VALUES.cargoGestorReconhecimento;
+      }
+      return updated;
+    });
   };
 
   // Field change updates
@@ -264,7 +287,7 @@ export default function App() {
 
   // Standard Print Trigger
   const handleExportWord = () => {
-    const printableContent = document.getElementById('printable-content');
+    const printableContent = document.getElementById('print-document-content') || document.getElementById('preview-document-content') || document.getElementById('printable-content');
     if (!printableContent) return;
 
     const htmlContent = printableContent.innerHTML;
@@ -310,7 +333,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden print:min-h-0 print:h-auto print:overflow-visible print:bg-white print:block">
       
       {/* ────────────────── TOP NAVIGATION HEADER BAR ────────────────── */}
       <header className="h-14 shrink-0 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between no-print shadow-md">
@@ -2463,7 +2486,7 @@ export default function App() {
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Título da Homenagem</label>
                         <input
                           type="text"
-                          value={state.tituloReconhecimento}
+                          value={state.tituloReconhecimento || ''}
                           onChange={(e) => setField('tituloReconhecimento', e.target.value.toUpperCase())}
                           placeholder="Ex: PARABÉNS PELO SEU DESEMPENHO E DEDICAÇÃO!"
                           className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 font-bold focus:ring-1 focus:ring-[#f37021]"
@@ -2474,7 +2497,7 @@ export default function App() {
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Subtítulo / Selo Superior</label>
                         <input
                           type="text"
-                          value={state.subtituloReconhecimento}
+                          value={state.subtituloReconhecimento || ''}
                           onChange={(e) => setField('subtituloReconhecimento', e.target.value)}
                           placeholder="Ex: Comunicado Especial • Reconhecimento de Mérito"
                           className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
@@ -2494,7 +2517,7 @@ export default function App() {
                         </div>
                         <textarea
                           rows={5}
-                          value={state.msgReconhecimento}
+                          value={state.msgReconhecimento || ''}
                           onChange={(e) => setField('msgReconhecimento', e.target.value)}
                           className="w-full text-xs bg-white border border-slate-350 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021] outline-none leading-relaxed"
                           placeholder="Digite o texto de elogio e reconhecimento..."
@@ -2514,7 +2537,7 @@ export default function App() {
                           <label className="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Título do Destaque</label>
                           <input
                             type="text"
-                            value={state.motivoDestaqueReconhecimento}
+                            value={state.motivoDestaqueReconhecimento || ''}
                             onChange={(e) => setField('motivoDestaqueReconhecimento', e.target.value)}
                             placeholder="Ex: Mérito e Atuação de Destaque"
                             className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2 focus:ring-1 focus:ring-[#f37021]"
@@ -2524,7 +2547,7 @@ export default function App() {
                           <label className="block text-[10px] font-bold text-slate-600 uppercase mb-0.5">Detalhamento das Conquistas / Qualidades</label>
                           <textarea
                             rows={2}
-                            value={state.detalheDestaqueReconhecimento}
+                            value={state.detalheDestaqueReconhecimento || ''}
                             onChange={(e) => setField('detalheDestaqueReconhecimento', e.target.value)}
                             placeholder="Descreva as qualidades, entregas e pontos fortes em destaque..."
                             className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2 focus:ring-1 focus:ring-[#f37021]"
@@ -2536,7 +2559,7 @@ export default function App() {
                         <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Frase de Encerramento Motivacional</label>
                         <input
                           type="text"
-                          value={state.fechamentoReconhecimento}
+                          value={state.fechamentoReconhecimento || ''}
                           onChange={(e) => setField('fechamentoReconhecimento', e.target.value)}
                           placeholder="Ex: Desejamos contínuo sucesso e crescimento compartilhado!"
                           className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
@@ -2548,7 +2571,7 @@ export default function App() {
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Gestor Responsável (Nome)</label>
                           <input
                             type="text"
-                            value={state.gestorReconhecimento}
+                            value={state.gestorReconhecimento || ''}
                             onChange={(e) => setField('gestorReconhecimento', e.target.value.toUpperCase())}
                             className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
                           />
@@ -2557,7 +2580,7 @@ export default function App() {
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Cargo do Gestor</label>
                           <input
                             type="text"
-                            value={state.cargoGestorReconhecimento}
+                            value={state.cargoGestorReconhecimento || ''}
                             onChange={(e) => setField('cargoGestorReconhecimento', e.target.value)}
                             className="w-full text-xs bg-white border border-slate-250 rounded-lg p-2.5 focus:ring-1 focus:ring-[#f37021]"
                           />
@@ -2866,15 +2889,15 @@ export default function App() {
           {/* The Physical Simulated A4 Sheet Container */}
           <div className="w-full flex-1 flex justify-center items-start overflow-x-auto p-4 select-none">
             <div className="origin-top pb-24 scale-transform-container">
-              <DocumentPaper state={state} zoom={zoom} />
+              <DocumentPaper state={state} zoom={zoom} id="preview-document-content" />
             </div>
           </div>
         </section>
       </main>
 
       {/* ────────────────── PRISTINE PRINT ONLY CONTAINER (ALWAYS SCALE 1.0) ────────────────── */}
-      <div className="hidden print:block w-full">
-        <DocumentPaper state={state} zoom={1.0} />
+      <div className="hidden print:block w-full print-only-container">
+        <DocumentPaper state={state} zoom={1.0} id="print-document-content" />
       </div>
     </div>
   );

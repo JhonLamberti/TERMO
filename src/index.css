@@ -37,26 +37,41 @@
 
 @media print {
   /* Hide all interactive non-print elements */
-  nav, aside, button, header, .no-print, .save-status, .zoom-controls {
+  nav, aside, button, header, .no-print, .save-status, .zoom-controls, main {
     display: none !important;
   }
   
-  body, html {
+  body, html, #root, #root > div {
     background: #ffffff !important;
     color: #000000 !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: visible !important;
-  }
-  
-  #root, .min-h-screen, .app-layout {
-    display: block !important;
-    min-height: auto !important;
     height: auto !important;
-    background: white !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    width: 100% !important;
+    display: block !important;
+    position: static !important;
   }
   
-  #printable-content {
+  .print-only-container {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    position: static !important;
+  }
+
+  .print-only-container * {
+    visibility: visible !important;
+  }
+  
+  #printable-content, #print-document-content {
     transform: none !important;
     width: 100% !important;
     height: auto !important;
@@ -69,14 +84,18 @@
   .page-break-after-always {
     page-break-after: always !important;
     break-after: page !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     border: none !important;
     box-shadow: none !important;
-    min-height: 100vh !important; /* ensures it takes the full page */
+  }
+
+  .page-break-after-always:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 }
 
 @page {
   margin: 0;
-  size: A4;
+  size: A4 portrait;
 }
